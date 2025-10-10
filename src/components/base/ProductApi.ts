@@ -24,4 +24,4 @@ export class ProductApi {
     const response = await this.api.post<IOrderResponse>('/order/', orderData);
     return response;
   }
-}
+};

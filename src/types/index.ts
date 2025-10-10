@@ -10,20 +10,20 @@ export interface IApi {
 
 //Товар
 export interface IProduct {
-  id: string;   // Уникальный идентификатор товара
-  description: string; // Описание товара
-  image: string; // Ссылка на изображение товара
-  title: string;  // Название товара
-  category: string; // Категория товара
-  price: number | null; // Цена товара
+  id: string;
+  description: string;
+  image: string;
+  title: string;
+  category: string;
+  price: number | null;
 }
 
 //Покупатель
 export interface IBuyer {
-  payment: TPayment;  // Способ оплаты
-  email: string; // Адрес электронной почты полкупателя
-  phone: string; // Номер телефона покупателя
-  address: string; // Адрес доставки
+  payment: TPayment;
+  email: string;
+  phone: string;
+  address: string;
 }
 
 //Валидация ошибок полей ввода
