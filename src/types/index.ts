@@ -25,3 +25,11 @@ export interface IBuyer {
   phone: string; // Номер телефона покупателя
   address: string; // Адрес доставки
 }
+
+//Валидация ошибок полей ввода
+export interface IErrors {
+  payment: string | undefined;
+  email: string | undefined;
+  phone: string | undefined;
+  address: string | undefined;
+}
