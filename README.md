@@ -135,7 +135,7 @@ interface IBuyer {
 `getItemsList(): IProduct[]`- получение массива товаров из модели;
 `setItemsList(items: IProduct[]) : void` - сохранение массива товаров, полученного в параметрах метода;
 `getItemById(id: string): IProduct | undefined` - получение карточки товара по id;
-`saveSelectedItem(item: IProduct) : void` - Сохранение выбранной карточки товара для подробного отображения;
+`setSelectedItem(item: IProduct) : void` - Сохранение выбранной карточки товара для подробного отображения;
 `getSelectedItem() : IProduct | null` - Получение информации о товаре для его подробного отображения в отдельном окне.
 
 
@@ -148,10 +148,10 @@ interface IBuyer {
 `addItem(item: IProduct) : void` - добавление товара в корзину;
 `getProductsList(): IProduct[]` - Получение массива товаров, перемещенных в корзину;
 `removeItem(product: IProduct) : void` - удаление товара из корзины;
-`clearCart() : void` - очистка содержимого корзины;
-`getTotalPrice() : number` - подсчет стоимости всех товаров в корзине;
+`clearCart(): void` - очистка содержимого корзины;
+`getTotalPrice(): number` - подсчет стоимости всех товаров в корзине;
 `getItemNumber(): number` - подсчет количества товаров в корзине;
-`hasItem(productId: string) : boolean` - проверка наличия товара в корзине по его id;
+`hasItem(productId: string): boolean` - проверка наличия товара в корзине по его id;
 
 #### Покупатель (class Buyer)
 Класс Buyer предназначен для хранения информации о покупателе, необходимой для оформления заказа.
@@ -165,9 +165,10 @@ interface IBuyer {
 
 Методы:
 `getBuyerData(): IBuyer` - получение всех данных покупателя;
-`setPayment(payment: TPayment) : void`,
-`setAddress(address: string) : void`,
-`setPhone(phone: string) : void`,
-`setEmail(email: string) : void` - отдельные методы для сохранения данных пользователя.
+`setPayment(payment: TPayment): void`,
+`setAddress(address: string): void`,
+`setPhone(phone: string): void`,
+`setEmail(email: string): void` - отдельные методы для сохранения данных пользователя;
+`setBuyerData(data: Partial<IBuyer>): void` - отбщий метод для сохранения данных пользователя;
 `validateData(): IErrors` - валидация введенных данных;
-`clearBuyerData() : void` - очистка даннных покупателя;
+`clearBuyerData(): void` - очистка даннных покупателя.

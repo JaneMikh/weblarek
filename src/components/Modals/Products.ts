@@ -1,13 +1,8 @@
 import { IProduct } from "../../types";
 
 export class Products {
-  private items: IProduct[];
-  private selectedItem!: IProduct | null;
-
-  constructor(items: IProduct[] = []) {
-    this.items = items;
-    this.selectedItem = null;
-  }
+  private items: IProduct[] = [];
+  private selectedItem: IProduct | null = null;
 
   // Получение массива товаров из модели
   getItemsList(): IProduct[] {
@@ -15,7 +10,7 @@ export class Products {
   }
 
   //Сохранение массива товаров, полученного в параметрах метода
-  setItemsList(items: IProduct[]) : void {
+  setItemsList(items: IProduct[]): void {
     this.items = items;
   }
 
@@ -25,12 +20,12 @@ export class Products {
   }
 
   //Сохранение выбранной карточки товара для подробного отображения
-  saveSelectedItem(item: IProduct) : void {
+  setSelectedItem(item: IProduct): void {
     this.selectedItem = item;
   }
 
   //Получение информации о товаре для его подробного отображения в отдельном окне
-  getSelectedItem() : IProduct | null {
+  getSelectedItem(): IProduct | null {
     return this.selectedItem;
   }
-}
+};

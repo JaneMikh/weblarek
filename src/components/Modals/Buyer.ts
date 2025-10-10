@@ -1,9 +1,7 @@
 import { IBuyer, TPayment, IErrors } from "../../types";
 
 export class Buyer {
-  private buyerData: Partial<IBuyer> = {}; //Partial — утилитарный тип в TypeScript, который преобразует все свойства типа в опциональные.
-
-  constructor() {}
+  private buyerData: Partial<IBuyer> = {};
 
   //Получение всех данных покупателя
   getBuyerData(): Partial<IBuyer> {
@@ -11,23 +9,23 @@ export class Buyer {
   }
 
   //Сохранение данных о покупателе
- /* setBuyerData(data: Partial<IBuyer>) : void {
+  setBuyerData(data: Partial<IBuyer>): void {
     this.buyerData = {...this.buyerData, ...data};
-  }*/
+  }
 
-  setPayment(payment: TPayment) : void {
+  setPayment(payment: TPayment): void {
     this.buyerData.payment = payment;
   }
 
-  setAddress(address: string) : void {
+  setAddress(address: string): void {
     this.buyerData.address = address;
   }
 
-  setPhone(phone: string) : void {
+  setPhone(phone: string): void {
     this.buyerData.phone = phone;
   }
 
-  setEmail(email: string) : void {
+  setEmail(email: string): void {
     this.buyerData.email = email;
   }
 
@@ -49,7 +47,7 @@ export class Buyer {
   }
 
   //Очистка даннных покупателя
-  clearBuyerData() : void {
+  clearBuyerData(): void {
     this.buyerData = {
       payment: '',
       email: '',
@@ -57,4 +55,4 @@ export class Buyer {
       address: '',
     };
   }
-}
+};

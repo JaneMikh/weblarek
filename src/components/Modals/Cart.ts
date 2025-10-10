@@ -1,21 +1,17 @@
 import { IProduct } from "../../types";
 
 export class Cart {
-  private productsList: IProduct[];
-
-  constructor(items: IProduct[] = []) {
-    this.productsList = items;
-  }
+  private productsList: IProduct[] = [];
 
   //Проверка наличия товара в корзине по его id
-  hasItem(productId: string) : boolean {
+  hasItem(productId: string): boolean {
     if(this.productsList.find(item => item.id === productId)) {
       return true;
     } else return false;
   }
 
   //Добавление товара в корзину
-  addItem(item: IProduct) : void {
+  addItem(item: IProduct): void {
     if(!this.hasItem(item.id)) {
       this.productsList.push(item);
     }
@@ -27,12 +23,12 @@ export class Cart {
   }
 
   //Удаление товара из корзины
-  removeItem(product: IProduct) : void {
+  removeItem(product: IProduct): void {
     this.productsList = this.productsList.filter(item => item.id !== product.id);
   }
 
   //Удаление всех товаров из корзины
-  clearCart() : void {
+  clearCart(): void {
    this.productsList = [];
   }
 
@@ -42,7 +38,7 @@ export class Cart {
   }
 
   //Подсчет стоимости всех товаров в корзине
-  getTotalPrice() : number {
+  getTotalPrice(): number {
     let total = 0;
     this.productsList.forEach((item) => {
       if(item.price) {
@@ -51,4 +47,4 @@ export class Cart {
     });
     return total;
   }
-}
+};
