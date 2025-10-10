@@ -1,0 +1,2 @@
+//import { IProduct } from "../../types";
+
