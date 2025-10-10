@@ -169,6 +169,39 @@ interface IBuyer {
 `setAddress(address: string): void`,
 `setPhone(phone: string): void`,
 `setEmail(email: string): void` - отдельные методы для сохранения данных пользователя;
-`setBuyerData(data: Partial<IBuyer>): void` - отбщий метод для сохранения данных пользователя;
+`setBuyerData(data: Partial<IBuyer>): void` - общий метод для сохранения данных пользователя;
 `validateData(): IErrors` - валидация введенных данных;
 `clearBuyerData(): void` - очистка даннных покупателя.
+
+## Слой коммуникации
+### Класс ProductApi
+Этот класс будет использовать композицию, чтобы выполнить запрос на сервер с помощью метода get класса Api и будет получать с сервера объект с массивом товаров.
+
+Интерфейсы данных для Api:
+```ts
+// Ответ сервера в случае GET-запроса
+interface IProductData {
+    items: IProduct[]; //общий список товаров
+    total: number; //количество товаров в заказе
+}
+
+//Формат данных заказа при отправке на сервер (POST-запрос)
+interface IOrderData {
+    payment: IBuyer['payment'];
+    email: string;
+    phone: string;
+    address: string;
+    items: string[];  //массив из id каждого товара
+    total: number;  //общая сумма заказа
+}
+
+//Формат данных ответа сервера после успешного POST-запроса
+interface IOrderResponse {
+    id: string; //id заказа, присваемый сервером
+    total: number; // общая сумма заказа
+}
+```
+
+Методы класса:
+`getProductsData(): Promise<IProduct[]>` - получение массива товаров с сервера;
+`postOrderData(orderData: IOrderData): Promise<IOrderResponse>` - отправка данных заказа на сервер.

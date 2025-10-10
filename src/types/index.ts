@@ -33,3 +33,26 @@ export interface IErrors {
   phone: string | undefined;
   address: string | undefined;
 }
+
+//Слой коммуникации
+// Ответ сервера в случае GET-запроса
+export interface IProductData {
+    items: IProduct[]; //общий список товаров
+    total: number; //количество товаров в заказе
+}
+
+//Формат данных заказа при отправке на сервер (POST-запрос)
+export interface IOrderData {
+    payment: IBuyer['payment'];
+    email: string;
+    phone: string;
+    address: string;
+    items: string[];  //массив из id каждого товара
+    total: number;  //общая сумма заказа
+}
+
+//Формат данных ответа сервера после успешного POST-запроса
+export interface IOrderResponse {
+    id: string; //id заказа, присваемый сервером
+    total: number; // общая сумма заказа
+}

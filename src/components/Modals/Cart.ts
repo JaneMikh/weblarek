@@ -1,7 +1,7 @@
 import { IProduct } from "../../types";
 
 export class Cart {
-  private productsList: IProduct[] = [];
+  /*private*/ productsList: IProduct[] = [];
 
   //Проверка наличия товара в корзине по его id
   hasItem(productId: string): boolean {

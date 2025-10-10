@@ -5,6 +5,10 @@ import { Buyer } from './components/Modals/Buyer';
 
 import { apiProducts } from './utils/data';
 
+import { ProductApi } from './components/base/ProductApi';
+import { Api } from './components/base/Api';
+import { API_URL } from './utils/constants';
+
 // ТЕСТИРОВАНИЕ КЛАССА-МОДЕЛИ PRODUCTS //
 const productsModal = new Products();
 
@@ -79,3 +83,48 @@ buyerModal.clearBuyerData();
 console.log('Проверка пустой формы на валидность заполненных полей: ', buyerModal.validateData());
 console.log('Все данные о покупателе удалены!', buyerModal.getBuyerData());
 
+//ТЕСТИРОВАНИЕ API
+const api = new Api(API_URL);
+const productApi = new ProductApi(api);
+
+
+//Получение данных с сервера и их сохранение
+async function getProducts() {
+  try {
+    const products = await productApi.getProductsData();
+    productsModal.setItemsList(products);
+    console.log('Каталог товаров, выгруженных с сервера: ', productsModal.getItemsList());
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+//Отправка заказа на сервер
+async function postOrder() {
+  try {
+    const items = productsModal.getItemsList();
+    //Допустим, в корзине есть 2 товара:
+    cartModal.addItem(items[0]);
+    cartModal.addItem(items[1]);
+    //Проходим по массиву с товарами и создаем новый массив, состоящий из id каждого товара
+    const itemsIdArray = cartModal.productsList.map((item) => item.id);
+    //Считаем общую стоимость заказа
+    const totalPrice = cartModal.getTotalPrice();
+  
+    const order = await productApi.postOrderData({
+      payment: 'cash',
+      email: 'test@mail.ru',
+      phone: '+71111111111',
+      address: 'г. Москва',
+      items: itemsIdArray, //сюда передаем массив из id
+      total: totalPrice, // сюда передаем сумму заказа
+    });
+
+    console.log('Ваш заказ: ', order);
+  } catch (error) {
+    console.error('Ошибка при отправке заказа: ', error);
+  }
+}
+
+getProducts();
+postOrder();
