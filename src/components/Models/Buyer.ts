@@ -1,4 +1,4 @@
-import { IBuyer, TPayment, IErrors } from "../../types";
+import { IBuyer, TErrors } from "../../types";
 
 export class Buyer {
   private buyerData: Partial<IBuyer> = {};
@@ -13,30 +13,9 @@ export class Buyer {
     this.buyerData = {...this.buyerData, ...data};
   }
 
-  setPayment(payment: TPayment): void {
-    this.buyerData.payment = payment;
-  }
-
-  setAddress(address: string): void {
-    this.buyerData.address = address;
-  }
-
-  setPhone(phone: string): void {
-    this.buyerData.phone = phone;
-  }
-
-  setEmail(email: string): void {
-    this.buyerData.email = email;
-  }
-
   //Валидация введенных данных
-  validateData(): IErrors {
-    const errors: IErrors = {
-      payment: undefined,
-      email: undefined,
-      phone: undefined,
-      address: undefined,
-    }
+  validateData(): TErrors {
+    const errors: TErrors = {};
 
     if(!this.buyerData.payment) {errors.payment = "Выберете способ оплаты покупки"};
     if(!this.buyerData.email) {errors.email = "Укажите адрес электронной почты"};

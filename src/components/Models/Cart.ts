@@ -5,9 +5,7 @@ export class Cart {
 
   //Проверка наличия товара в корзине по его id
   hasItem(productId: string): boolean {
-    if(this.productsList.find(item => item.id === productId)) {
-      return true;
-    } else return false;
+    return this.productsList.some(item => item.id === productId);
   }
 
   //Добавление товара в корзину
@@ -39,12 +37,6 @@ export class Cart {
 
   //Подсчет стоимости всех товаров в корзине
   getTotalPrice(): number {
-    let total = 0;
-    this.productsList.forEach((item) => {
-      if(item.price) {
-        total = total + item.price;
-      }
-    });
-    return total;
+    return this.productsList.reduce((total, item) => total + (item.price || 0), 0);
   }
 };

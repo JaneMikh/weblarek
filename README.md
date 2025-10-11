@@ -171,7 +171,10 @@ interface IBuyer {
 `setPhone(phone: string): void`,
 `setEmail(email: string): void` - отдельные методы для сохранения данных пользователя;
 `setBuyerData(data: Partial<IBuyer>): void` - общий метод для сохранения данных пользователя;
-`validateData(): IErrors` - валидация введенных данных;
+`validateData(): TErrors` - валидация введенных данных, где 
+```ts 
+type TErrors = Partial<Record<keyof IBuyer, string>>;
+```
 `clearBuyerData(): void` - очистка даннных покупателя.
 
 ## Слой коммуникации
@@ -187,11 +190,7 @@ interface IProductData {
 }
 
 //Формат данных заказа при отправке на сервер (POST-запрос)
-interface IOrderData {
-    payment: IBuyer['payment'];
-    email: string;
-    phone: string;
-    address: string;
+interface IOrderData extends IBuyer {
     items: string[];  //массив из id каждого товара
     total: number;  //общая сумма заказа
 }

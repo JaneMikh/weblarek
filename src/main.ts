@@ -1,7 +1,7 @@
 import './scss/styles.scss';
-import { Products } from './components/Modals/Products';
-import { Cart } from './components/Modals/Cart';
-import { Buyer } from './components/Modals/Buyer';
+import { Products } from './components/Models/Products';
+import { Cart } from './components/Models/Cart';
+import { Buyer } from './components/Models/Buyer';
 import { apiProducts } from './utils/data';
 import { ProductApi } from './components/base/ProductApi';
 import { Api } from './components/base/Api';
@@ -60,25 +60,19 @@ buyerModal.setBuyerData({
 console.log('Текушие данные о покупателе: ', buyerModal.getBuyerData());
 
 //Изменяем отдельные поля ввода и вновь запрашиванием данные пользователя
-buyerModal.setPayment('cash');
-buyerModal.setAddress('г. Новосибирск');
-buyerModal.setPhone('+71111111111');
-buyerModal.setEmail('matricaria@yandex.com');
-
+buyerModal.setBuyerData({payment: 'cash'});
 console.log('Обновленные данные о покупателе: ', buyerModal.getBuyerData());
 
 //Проверка валидации
 //Условие 1: Все поля ввода заполнены:
-console.log('Проверка заведомо валидной формы на валидность: ', buyerModal.validateData());
+console.log('Нет ошибок в валидации (true): ', buyerModal.validateData());
 
 //Условие 2: Не заполнены некоторые поля ввода:
-buyerModal.setAddress('');
-buyerModal.setEmail('');
-console.log('Проверка заведомо валидной формы на валидность: ', buyerModal.validateData());
+buyerModal.setBuyerData({payment: '', email: ''});
+console.log('Есть ошибки в валидации (false): ', buyerModal.validateData());
 
-//Условие 3: Пустая форма + проверка работы метода по очистке данных покупателя
+//Проверка работы метода по очистке данных покупателя
 buyerModal.clearBuyerData();
-console.log('Проверка пустой формы на валидность заполненных полей: ', buyerModal.validateData());
 console.log('Все данные о покупателе удалены!', buyerModal.getBuyerData());
 
 ////// ТЕСТИРОВАНИЕ API //////
@@ -93,7 +87,7 @@ async function getProducts() {
     productsModal.setItemsList(products);
     console.log('Каталог товаров, полученных с сервера: ', productsModal.getItemsList());
   } catch (error) {
-    console.error('Ошибка при загрузке товаров', error);
+    console.error('Ошибка при загрузке товаров:', error);
   }
 }
 getProducts();

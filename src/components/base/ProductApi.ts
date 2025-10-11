@@ -15,13 +15,24 @@ export class ProductApi {
 
   //Получение списка товаров с сервера
   async getProductsData(): Promise<IProduct[]> {
-    const response = await this.api.get<IProductData>('/product/');
-    return response.items;
-  }
+    try{
+      const response = await this.api.get<IProductData>('/product/');
+      return response.items;
+    } catch(error) {
+      console.error('Ошибка при загрузке товаров: ', error);
+      throw error;
+    } 
+  };
 
   //Отправка данных заказа на сервер
   async postOrderData(orderData: IOrderData): Promise<IOrderResponse> {
-    const response = await this.api.post<IOrderResponse>('/order/', orderData);
-    return response;
-  }
+    try {
+      const response = await this.api.post<IOrderResponse>('/order/', orderData);
+      return response;
+    }
+    catch(error) {
+      console.error('Ошибка при загрузке товаров: ', error);
+      throw error;
+    } 
+  };
 };

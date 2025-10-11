@@ -27,12 +27,7 @@ export interface IBuyer {
 }
 
 //Валидация ошибок полей ввода
-export interface IErrors {
-  payment: string | undefined;
-  email: string | undefined;
-  phone: string | undefined;
-  address: string | undefined;
-}
+export type TErrors = Partial<Record<keyof IBuyer, string>>;
 
 //Слой коммуникации
 // Ответ сервера в случае GET-запроса
@@ -42,11 +37,7 @@ export interface IProductData {
 }
 
 //Формат данных заказа при отправке на сервер (POST-запрос)
-export interface IOrderData {
-    payment: IBuyer['payment'];
-    email: string;
-    phone: string;
-    address: string;
+export interface IOrderData extends IBuyer {
     items: string[];  //массив из id каждого товара
     total: number;  //общая сумма заказа
 }
