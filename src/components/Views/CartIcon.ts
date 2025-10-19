@@ -7,6 +7,7 @@ export class CartIcon{
   protected cartButton: HTMLButtonElement;
 
 
+
   constructor(protected events: IEvents) {
     this.cartButton = ensureElement<HTMLButtonElement>('.header__container');
     this.counterElement = ensureElement<HTMLElement>('.header__basket-counter');

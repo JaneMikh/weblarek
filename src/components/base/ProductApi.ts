@@ -4,7 +4,7 @@ import {
   IProductData,
   IOrderData,
   IOrderResponse
-} from "../../types";
+} from "../../types/index";
 
 export class ProductApi {
   private api: IApi;

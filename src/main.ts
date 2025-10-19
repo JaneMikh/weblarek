@@ -9,12 +9,53 @@ import { API_URL } from './utils/constants';
 
 import { CartIcon } from './components/Views/CartIcon';
 import { EventEmitter } from './components/base/Events';
+import { Card } from './components/Views/Card';
+import { IProduct } from './types/index';
 
 //ТЕМПЛЕЙТЫ
 const events = new EventEmitter();
 const cartIconTemplate = new CartIcon(events);
+const cardTemplate = document.querySelector<HTMLTemplateElement>('#card-catalog').content;
 
-cartIconTemplate.counter(10);
+const gallery = document.querySelector<HTMLElement>('.gallery');
+
+const catalogue = new Products();
+const api = new Api(API_URL);
+const productApi = new ProductApi(api);
+
+
+// Инициализация при загрузке страницы
+function init() {
+  //Список товаров
+  loadProducts();
+
+  //Список событий
+
+  //Обнуление счетчика у корзины
+}
+
+
+// Получение карточек с сервера
+async function loadProducts() {
+  try {
+    const cardList = await productApi.getProductsData();
+     catalogue.setItemsList(cardList);
+     gallery.replaceChildren(
+		  ...cardList.map((item: IProduct) => {
+			  const cardElement = cardTemplate.querySelector('.card').cloneNode(true) as HTMLElement;
+			  const productCardView = new Card(cardElement, events);
+			  const renderedCatalogue = productCardView.render(item);
+			  return renderedCatalogue;
+		  })
+    )
+  } catch (error) {
+    console.error('Ошибка при загрузке каталога: ', error);
+  }
+}
+
+init();
+
+
 
 
 
