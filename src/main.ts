@@ -7,6 +7,24 @@ import { ProductApi } from './components/base/ProductApi';
 import { Api } from './components/base/Api';
 import { API_URL } from './utils/constants';
 
+import { CartIcon } from './components/Views/CartIcon';
+import { EventEmitter } from './components/base/Events';
+
+//ТЕМПЛЕЙТЫ
+const events = new EventEmitter();
+const cartIconTemplate = new CartIcon(events);
+
+cartIconTemplate.counter(10);
+
+
+
+
+
+
+
+
+
+/*
 ////// ТЕСТИРОВАНИЕ КЛАССА-МОДЕЛИ PRODUCTS //////
 const productsModal = new Products();
 
@@ -91,3 +109,5 @@ async function getProducts() {
   }
 }
 getProducts();
+
+*/
