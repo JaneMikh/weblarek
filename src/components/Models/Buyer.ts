@@ -1,4 +1,4 @@
-import { IBuyer, TErrors } from "../../types";
+import { IBuyer, TErrors } from "../../types/index";
 
 export class Buyer {
   private buyerData: Partial<IBuyer> = {};

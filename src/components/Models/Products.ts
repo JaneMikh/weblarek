@@ -1,5 +1,5 @@
 import { IProduct } from "../../types/index";
-
+type TProductId = Pick<IProduct, 'id'>;
 export class Products {
   private items: IProduct[] = [];
   private selectedItem: IProduct | null = null;

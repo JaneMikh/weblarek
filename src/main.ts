@@ -11,17 +11,24 @@ import { CartIcon } from './components/Views/CartIcon';
 import { EventEmitter } from './components/base/Events';
 import { Card } from './components/Views/Card';
 import { IProduct } from './types/index';
-
+import { Modal } from './components/Views/Modal';
+import { CardView } from './components/Views/CardView';
 //ТЕМПЛЕЙТЫ
 const events = new EventEmitter();
 const cartIconTemplate = new CartIcon(events);
 const cardTemplate = document.querySelector<HTMLTemplateElement>('#card-catalog').content;
-
+const cardTemplatePreview = document.querySelector<HTMLTemplateElement>('#card-preview').content;
+const modalElement = document.querySelector('.modal') as HTMLElement;
 const gallery = document.querySelector<HTMLElement>('.gallery');
 
 const catalogue = new Products();
 const api = new Api(API_URL);
 const productApi = new ProductApi(api);
+const modal = new Modal(modalElement, events);
+const buyer = new Buyer();
+
+type TProductId = Pick<IProduct, 'id'>;
+
 
 
 // Инициализация при загрузке страницы
@@ -43,7 +50,7 @@ async function loadProducts() {
      gallery.replaceChildren(
 		  ...cardList.map((item: IProduct) => {
 			  const cardElement = cardTemplate.querySelector('.card').cloneNode(true) as HTMLElement;
-			  const productCardView = new Card(cardElement, events);
+			  const productCardView = new Card(cardElement, events, item);
 			  const renderedCatalogue = productCardView.render(item);
 			  return renderedCatalogue;
 		  })
@@ -55,11 +62,28 @@ async function loadProducts() {
 
 init();
 
+/*const product = apiProducts.items[1].id;
+console.log(product);
+/*const cardElement = cardTemplatePreview.querySelector('.card').cloneNode(true) as HTMLElement;
+const cardPreview = new CardView(cardElement, events);
+
+const res = cardPreview.render(product);
+console.log(res);
+modal.setContent(res).openModal();
+
+modal.closeModal();*/
 
 
+events.on<{ id: string }>('card:select', ({id}) => {
+	const productData = catalogue.getItemById(id);
+  console.log(productData);
+  if(!productData) return;
 
+  const cardElement = cardTemplatePreview.querySelector('.card').cloneNode(true) as HTMLElement;
+	const cardPreview = new CardView(cardElement, events, productData);
 
-
+  modal.setContent(cardPreview.render(productData)).openModal();
+});
 
 
 
