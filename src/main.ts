@@ -18,6 +18,8 @@ import { CardInCatalogue } from './components/Views/Cards/CardInCatalogue';
 import { IGalleryCard } from './types/index';
 import { CardInModal } from './components/Views/Cards/CardInModal';
 import { CardInCartView } from './components/Views/Cards/CardInCart';
+import { ContactsForm, IContactsForm } from './components/Views/Forms/ContactsForm';
+import { OrderForm, IOrderForm } from './components/Views/Forms/OrderForm';
 
 // СОБЫТИЯ
 const events = new EventEmitter();
@@ -30,8 +32,12 @@ const productApi = new ProductApi(api);
 const cardTemplate = ensureElement<HTMLTemplateElement>("#card-catalog");
 const cartTemplate = ensureElement<HTMLTemplateElement>("#basket");
 const cartContent = cartTemplate.content.firstElementChild!.cloneNode(true) as HTMLElement;
+const orderTemplate = ensureElement<HTMLTemplateElement>("#order");
+const orderContent = orderTemplate.content.firstElementChild!.cloneNode(true) as HTMLFormElement;
+const contactsTemplate = ensureElement<HTMLTemplateElement>("#contacts");
+const contactsContent = contactsTemplate.content.firstElementChild!.cloneNode(true) as HTMLFormElement;
 
-// МОДЕЛИ (данные)
+	// МОДЕЛИ (данные)
 const catalogueModel = new Products(events);
 const cartModel = new Cart(events);
 const buyerModel = new Buyer(events);
@@ -41,6 +47,9 @@ const catalogueView = new Catalogue(ensureElement<HTMLElement>('.gallery'), even
 const modalView = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const cartIconView = new CartIcon(ensureElement<HTMLElement>('.header'), events);
 const cartView = new CartView(cartContent, events);
+const orderForm = new OrderForm(orderContent);
+const contactsForm = new ContactsForm(contactsContent, events);
+
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -131,6 +140,35 @@ events.on('cart:remove', ({ id }: { id: string }) => {
 	//с получением новой информации о списке товаров
   events.emit('cart:changed', {items: cartModel.getProductsList()});
 });
+
+
+// Форма "Способ оплаты и адрес доставки"
+events.on('order:open', () => {
+  orderForm.onSubmit((formData: IOrderForm) => {
+    modalView.close();
+    events.emit('order:success', { orderData: formData });
+    events.emit('contacts:open');
+  });
+
+  modalView.open(orderContent);
+});
+
+// Форма "Аресс электронной почты и телефон"
+events.on('contacts:open', () => {
+  contactsForm.onSubmit();
+
+  events.on('buyer:validated-data', ({ errors }: { errors: Record<string, string> }) => {
+    contactsForm.setErrors(errors);
+    }
+  );
+  modalView.open(contactsContent);
+});
+
+// Валидация по изменению полей. Передаем данные полей в модель "Buyer"
+events.on('buyer:changed-field', ({ formData }: { formData: { email: string; phone: string } }) => {
+    buyerModel.setBuyerData(formData);
+  }
+);
 
 
 loadProducts();

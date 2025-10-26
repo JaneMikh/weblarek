@@ -14,19 +14,30 @@ export class Buyer {
   //Сохранение данных о покупателе
   setBuyerData(data: Partial<IBuyer>): void {
     this.buyerData = {...this.buyerData, ...data};
-    this.events.emit('buyer:update-data', {buyer: this.buyerData}) //изменение данных покупателя
+    //изменение данных покупателя
+    this.events.emit('buyer:update-data', {buyer: this.buyerData});
     this.validateData();
   }
 
-  //Валидация введенных данных
-  validateData(): TErrors {
-    const errors: TErrors = {};
+  validateData(): Record<string, string> {
+    //Объек для хранения ошибок
+    const errors: Record<string, string> = {};
+    
+    //Обрабока ошибок для формы "Способ оплаты и адрес доставки"
+    if ('payment' in this.buyerData && !this.buyerData.payment) errors.payment = 'Не выбран способ оплаты';
+    if ('address' in this.buyerData && !this.buyerData.address) errors.address = 'Укажите адрес доставки';
 
-    if(!this.buyerData.payment) {errors.payment = "Выберете способ оплаты покупки"};
-    if(!this.buyerData.email) {errors.email = "Укажите адрес электронной почты"};
-    if(!this.buyerData.phone) {errors.phone = "Укажите Ваш номер телефона"};
-    if(!this.buyerData.address) {errors.address = "Укажите адрес доставки"};
+    //Обрабока ошибок для формы "Адресс электронной почты и номер телефона"
+    if ('email' in this.buyerData && !this.buyerData.email) errors.email = 'Укажите email';
+    else if ('email' in this.buyerData && this.buyerData.email && !this.buyerData.email.includes("@"))
+      errors.email = 'Неверно указан email';
 
+    if ('phone' in this.buyerData && !this.buyerData.phone) errors.phone = 'Укажите телефон';
+    else if ('phone' in this.buyerData && this.buyerData.phone && !this.buyerData.phone.match(/^\+?\d{10,15}$/))
+      errors.phone = 'Неверно указан телефон';
+
+    //Генерируется событие, для проверки валидации формы
+    this.events.emit("buyer:validated-data", {errors});
     return errors;
   }
 
