@@ -19,6 +19,8 @@ export class ContactsForm extends Form<IContactsForm> {
     this.emailInput = ensureElement<HTMLInputElement>('input[name="email"]', this.container)!;
     this.submitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', this.container)!;
 
+    this.submitButton.disabled = true;
+
     const changeInputsEmit = () => {
       this.events.emit('buyer:changed-field', {
         formData: {
@@ -30,19 +32,19 @@ export class ContactsForm extends Form<IContactsForm> {
 
     this.emailInput.addEventListener('input', changeInputsEmit);
     this.phoneInput.addEventListener('input', changeInputsEmit);
-
-    this.submitButton.disabled = true;
   }
 
   // Функция для отображения ошибок и обновления состояния формы
   setErrors(errors: Record<string, string>) {
-        if (errors.email)  {this.setError(errors.email);
-        } else if (errors.phone) {this.setError(errors.phone);
+        if (errors.email) {
+          this.setError(errors.email);
+        } else if (errors.phone) {
+          this.setError(errors.phone);
         } else this.clearError();
 
-        const hasErrors = Boolean(errors.email || errors.phone);
-        this.valid = !hasErrors;
-        this.submitButton.disabled = hasErrors;
+        const isErrors = Boolean(errors.email || errors.phone);
+        this.valid = !isErrors;
+        this.submitButton.disabled = isErrors;
       }
 
   onSubmit() {

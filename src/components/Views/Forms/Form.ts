@@ -30,17 +30,17 @@ export class Form<T extends IFormData> {
       }
   }
 
+  // Функция для получения текущего состояния поля по его имени
+  getInputValue(name: keyof T): string {
+    return this.inputs[name]?.value ?? '';
+  }
+
    // Функция для добавления значений в поля ввода
   setInputValue(name: keyof T, value: string): void { // передаем имя поля и его значение
     const input = this.inputs[name];
     if (input) {
       input.value = value;
     }
-  }
-
-  // Функция для получения текущего состояния поля по его имени
-  getInputValue(name: keyof T): string {
-    return this.inputs[name]?.value ?? '';
   }
 
   // Функция для удаления сообщения об ошибке

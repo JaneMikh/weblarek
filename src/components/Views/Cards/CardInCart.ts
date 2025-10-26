@@ -4,13 +4,12 @@ import { IProduct } from "../../../types/index";
 
 export class CardInCartView {
   private container: HTMLElement;
-  private events: IEvents;
   private price: HTMLSpanElement;
   private title: HTMLElement;
   private indexItem: HTMLSpanElement;
   private deleteButton: HTMLButtonElement;
 
-  constructor(container: HTMLElement, events: IEvents) {
+  constructor(container: HTMLElement, private events: IEvents) {
     this.container = container;
     this.events = events;
 
@@ -21,9 +20,9 @@ export class CardInCartView {
     this.deleteButton = ensureElement<HTMLButtonElement>('.basket__item-delete', container);
 
     this.deleteButton.addEventListener('click', () => {
-      const id = this.container.dataset.id;
-      if (id) {
-        this.events.emit('cart:remove', { id });
+      const cardId = this.container.dataset.id;
+      if (cardId) {
+        this.events.emit('cart:remove', {id: cardId});
       }
     });
   }

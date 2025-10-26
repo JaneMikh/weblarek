@@ -1,4 +1,4 @@
-import { IBuyer, TErrors } from "../../types/index";
+import { IBuyer } from "../../types/index";
 import { IEvents } from "../base/Events";
 
 export class Buyer {
@@ -20,7 +20,7 @@ export class Buyer {
   }
 
   validateData(): Record<string, string> {
-    //Объек для хранения ошибок
+    //Объект для хранения ошибок
     const errors: Record<string, string> = {};
     
     //Обрабока ошибок для формы "Способ оплаты и адрес доставки"

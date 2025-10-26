@@ -1,4 +1,3 @@
-import { IEvents } from "../../base/Events";
 import { ensureElement } from "../../../utils/utils";
 import { Component } from "../../base/Component";
 
@@ -10,9 +9,8 @@ export class SuccessModal extends Component<ISuccessModal> {
   private description: HTMLElement;
   private closeButton: HTMLButtonElement;
   
-  constructor(container: HTMLElement, private events: IEvents) {
+  constructor(container: HTMLElement) {
     super(container);
-    this.events = events;
     this.description = ensureElement<HTMLElement>(".order-success__description", this.container);
     this.closeButton = ensureElement<HTMLButtonElement>(".order-success__close", this.container);
   }

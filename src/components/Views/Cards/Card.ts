@@ -26,9 +26,7 @@ export class Card<T extends IProduct> {
   }
 
   set image(src: string) {
-    const srcProtocol = src.startsWith("http")
-      ? src
-      : `${this._CDN_URL}/${src.replace(/\.[^/.]+$/, ".png")}`;
+    const srcProtocol = src.startsWith("http") ? src : `${this._CDN_URL}/${src.replace(/\.[^/.]+$/, ".png")}`;
 
     this.setImage(
       this.imageItem,
@@ -58,10 +56,6 @@ export class Card<T extends IProduct> {
     this.image = card.image;
     this.cardIndex = index;
 
-    //Или проще
-    /*this.image.src = CDN_URL + '' + data.image;
-    this.image.alt = data.title;*/
-    
     this.setCategory(card);
   }
 

@@ -8,7 +8,6 @@ export class CartView  {
 
   constructor(container: HTMLElement, protected events: IEvents) {
     this.events = events;
-
     this.productsList = ensureElement<HTMLElement>('.basket__list', container);
     this.totalPrice = ensureElement<HTMLElement>('.basket__price', container);
     this.addCartButton = ensureElement<HTMLButtonElement>('.basket__button', container);
@@ -20,27 +19,25 @@ export class CartView  {
     let paragraph = document.createElement('p');
     paragraph.className = 'basket__empty';
     paragraph.textContent = 'Корзина пуста';
+    paragraph.style.opacity = '0.3';
+    paragraph.style.fontSize = '30px';
 
     this.productsList.append(paragraph);
-    if(this.totalPrice === null) {
-      this.addCartButton.disabled = true;
-    }
+    this.addCartButton.disabled = true;
   }
 
   updateState(items: HTMLElement[], price: number) {
     this.productsList.innerHTML = '';
-    
-    this.addCartButton.disabled = false;
-    items.forEach((item) => {
-      this.productsList.append(item);
-    });
-
     this.totalPrice.textContent = `${price} синапсов`;
+    this.addCartButton.disabled = false;
 
-    if (!items || items.length === 0) {
+     if (!items || items.length === 0) {
       this.setEmptyCartState();
       return;
     }
+    
+    items.forEach((item) => {
+      this.productsList.append(item);
+    });
   }
 }
-

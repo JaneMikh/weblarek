@@ -1,6 +1,6 @@
 import { Component } from "../base/Component";
 import { ensureElement } from "../../utils/utils";
-import { EventEmitter } from "../base/Events";
+import { IEvents } from "../base/Events";
 
 interface ICartButton {
   counter: number;
@@ -9,12 +9,10 @@ interface ICartButton {
 export class CartIcon extends Component<ICartButton> {
   protected counterElement: HTMLElement;
   protected cartButton: HTMLButtonElement;
-  protected events: EventEmitter;
 
-  constructor(container: HTMLElement, events: EventEmitter) {
+  constructor(container: HTMLElement, protected events: IEvents) {
     super(container);
     this.events = events;
-
     this.cartButton = ensureElement<HTMLButtonElement>('.header__container', this.container);
     this.counterElement = ensureElement<HTMLElement>('.header__basket-counter', this.container);
 

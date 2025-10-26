@@ -9,8 +9,7 @@ export class CardInModal extends Card <IProduct> {
 
   constructor(container: HTMLElement, events: IEvents) {
     super(container, events);
-
-    //Поиск элементов в DOM
+    this.events = events;
     this.description = ensureElement<HTMLElement>('.card__text', this.container);
     this.buyButton = ensureElement<HTMLButtonElement>('.card__button', this.container);
   }

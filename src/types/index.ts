@@ -26,9 +26,6 @@ export interface IBuyer {
   address: string;
 }
 
-//Валидация ошибок полей ввода
-export type TErrors = Partial<Record<keyof IBuyer, string>>;
-
 //Слой коммуникации
 // Ответ сервера в случае GET-запроса
 export interface IProductData {

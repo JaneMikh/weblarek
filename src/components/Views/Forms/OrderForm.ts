@@ -7,10 +7,10 @@ export interface IOrderForm extends IFormData {
 }
 
 export class OrderForm extends Form<IOrderForm> {
+  protected paymentType: 'card' | 'cash' | '' = '';
   protected addressInput: HTMLInputElement;
   protected cardButton: HTMLButtonElement;
   protected cashButton: HTMLButtonElement;
-  protected paymentType: 'card' | 'cash' | '' = '';
 
   constructor(container: HTMLFormElement) {
     super(container);
@@ -19,7 +19,6 @@ export class OrderForm extends Form<IOrderForm> {
     this.cashButton = ensureElement<HTMLButtonElement>('.button[name="cash"]', this.container)!;
     this.cardButton = ensureElement<HTMLButtonElement>('.button[name="card"]', this.container)!;
     
-
     this.addressInput.addEventListener('input', () => this.validate());
 
     this.cashButton.addEventListener("click", () => {
@@ -31,8 +30,6 @@ export class OrderForm extends Form<IOrderForm> {
       this.selectPayment('card');
       this.validate();
     });
-
-    
   }
 
   selectPayment(method: 'card' | 'cash'): void {
@@ -46,15 +43,29 @@ export class OrderForm extends Form<IOrderForm> {
     }
   }
 
+  // Функция для получения данных из полей ввода
+  getInputValue(name: keyof IOrderForm): string {
+    if (name === 'payment') return this.paymentType;
+    return super.getInputValue(name);
+  }
+
+  //Функция для введения данных в поля ввода
+  setInputValue(name: keyof IOrderForm, value: string): void {
+    if (name === 'payment') {
+      this.paymentType = value as 'card' | 'cash';
+    } else {
+      super.setInputValue(name, value);
+    }
+  }
+
+  // Функция для валидации полей ввода
   validate(): boolean {
-    const paymentIsValid = this.paymentType !== "";
+    const paymentIsValid = this.paymentType !== '';
     const addressIsValid = this.getInputValue('address').trim().length > 0;
     
     const errorsList: string[] = [];
     if (!paymentIsValid) errorsList.push('Не выбран способ оплаты');
     if (!addressIsValid) errorsList.push('Укажите адрес доставки');
-    
-
     if (errorsList.length > 0) {
       this.setError(errorsList.join(". "));
     } else {
@@ -63,18 +74,5 @@ export class OrderForm extends Form<IOrderForm> {
 
     this.valid = paymentIsValid && addressIsValid ;
     return this.isValid;
-  }
-
-  getInputValue(name: keyof IOrderForm): string {
-    if (name === 'payment') return this.paymentType;
-    return super.getInputValue(name);
-  }
-
-  setInputValue(name: keyof IOrderForm, value: string): void {
-    if (name === 'payment') {
-      this.paymentType = value as 'card' | 'cash';
-    } else {
-      super.setInputValue(name, value);
-    }
-  }
+  } 
 }

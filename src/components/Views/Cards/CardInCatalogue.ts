@@ -5,11 +5,12 @@ import { IProduct } from "../../../types/index";
 export class CardInCatalogue extends Card<IProduct> {
   private cardsData!: IProduct;
 
-  constructor(container: HTMLElement, events: IEvents) {
+  constructor(container: HTMLElement, protected events: IEvents) {
     super(container, events);
-
+    this.events = events;
+    
     //Обработчик события клика по карточке для его дальнейшего открытия 
-    //в модальном окне и генерация события "select:card"
+    //в модальном окне и генерация события "card:select"
      this.container.addEventListener('click', () => {
       if (!this.cardsData) return;
 

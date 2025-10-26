@@ -7,9 +7,8 @@ interface ICatalogue {
 
 export class Catalogue extends Component<ICatalogue> {
   protected galleryElement: HTMLElement;
-  private events: IEvents;
 
-  constructor(galleryElement: HTMLElement, events: IEvents) {
+  constructor(galleryElement: HTMLElement, protected events: IEvents) {
     super(galleryElement);
     this.galleryElement = galleryElement;
     this.events = events;
