@@ -1,8 +1,11 @@
 import { IProduct } from "../../types/index";
-type TProductId = Pick<IProduct, 'id'>;
+import { IEvents } from "../base/Events";
+
 export class Products {
   private items: IProduct[] = [];
   private selectedItem: IProduct | null = null;
+
+  constructor(private events: IEvents) {}
 
   // Получение массива товаров из модели
   getItemsList(): IProduct[] {
@@ -12,6 +15,7 @@ export class Products {
   //Сохранение массива товаров, полученного в параметрах метода
   setItemsList(items: IProduct[]): void {
     this.items = items;
+    this.events.emit('catalogue:changed');
   }
 
   //Получение карточки товара по id
@@ -22,6 +26,7 @@ export class Products {
   //Сохранение выбранной карточки товара для подробного отображения
   setSelectedItem(item: IProduct): void {
     this.selectedItem = item;
+    this.events.emit('product:selected', {item});
   }
 
   //Получение информации о товаре для его подробного отображения в отдельном окне

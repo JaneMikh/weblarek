@@ -1,0 +1,41 @@
+import { ensureElement } from "../../../utils/utils";
+import { IEvents } from "../../base/Events";
+import { IProduct } from "../../../types/index";
+
+export class CardInCartView {
+  private container: HTMLElement;
+  private events: IEvents;
+  private price: HTMLSpanElement;
+  private title: HTMLElement;
+  private indexItem: HTMLSpanElement;
+  private deleteButton: HTMLButtonElement;
+
+  constructor(container: HTMLElement, events: IEvents) {
+    this.container = container;
+    this.events = events;
+
+    //Поиск элементов в DOM
+    this.indexItem = ensureElement<HTMLSpanElement>('.basket__item-index', container);
+    this.price = ensureElement<HTMLSpanElement>('.card__price', container);
+    this.title = ensureElement<HTMLElement>('.card__title', container);
+    this.deleteButton = ensureElement<HTMLButtonElement>('.basket__item-delete', container);
+
+    this.deleteButton.addEventListener('click', () => {
+      const id = this.container.dataset.id;
+      if (id) {
+        this.events.emit('cart:remove', { id });
+      }
+    });
+  }
+  
+  setData(card: IProduct, index: number) {
+    this.container.dataset.id = card.id;
+    this.title.textContent = card.title;
+    this.price.textContent = `${card.price} синапсов`;
+    this.indexItem.textContent = (index + 1).toString();
+  }
+
+  render(): HTMLElement {
+    return this.container;
+  }
+}

@@ -47,3 +47,9 @@ export interface IOrderResponse {
     id: string; //id заказа, присваемый сервером
     total: number; // общая сумма заказа
 }
+
+// Карточка товара (preview)
+ export interface IGalleryCard {
+  product: IProduct;
+  image: string;
+}

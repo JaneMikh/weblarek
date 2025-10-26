@@ -1,7 +1,10 @@
+import { IEvents } from "../base/Events";
 import { IProduct } from "../../types/index";
 
 export class Cart {
   private productsList: IProduct[] = [];
+
+  constructor(private events: IEvents) {}
 
   //Проверка наличия товара в корзине по его id
   hasItem(productId: string): boolean {
@@ -12,6 +15,7 @@ export class Cart {
   addItem(item: IProduct): void {
     if(!this.hasItem(item.id)) {
       this.productsList.push(item);
+      this.events.emit('cart:changed', {items: this.productsList});
     }
   }
 
@@ -21,13 +25,15 @@ export class Cart {
   }
 
   //Удаление товара из корзины
-  removeItem(product: IProduct): void {
-    this.productsList = this.productsList.filter(item => item.id !== product.id);
+  removeItem(id: string): void {
+    this.productsList = this.productsList.filter(item => item.id !== id);
+    this.events.emit('cart:changed', { items: this.productsList});
   }
 
   //Удаление всех товаров из корзины
   clearCart(): void {
    this.productsList = [];
+   this.events.emit('cart:clear');
   }
 
   //Подсчет количества товаров в корзине
@@ -39,4 +45,4 @@ export class Cart {
   getTotalPrice(): number {
     return this.productsList.reduce((total, item) => total + (item.price || 0), 0);
   }
-};
+}

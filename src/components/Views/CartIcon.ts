@@ -1,24 +1,29 @@
-import { IEvents } from "../base/Events";
+import { Component } from "../base/Component";
 import { ensureElement } from "../../utils/utils";
+import { EventEmitter } from "../base/Events";
 
+interface ICartButton {
+  counter: number;
+}
 
-export class CartIcon{
+export class CartIcon extends Component<ICartButton> {
   protected counterElement: HTMLElement;
   protected cartButton: HTMLButtonElement;
+  protected events: EventEmitter;
 
+  constructor(container: HTMLElement, events: EventEmitter) {
+    super(container);
+    this.events = events;
 
+    this.cartButton = ensureElement<HTMLButtonElement>('.header__container', this.container);
+    this.counterElement = ensureElement<HTMLElement>('.header__basket-counter', this.container);
 
-  constructor(protected events: IEvents) {
-    this.cartButton = ensureElement<HTMLButtonElement>('.header__container');
-    this.counterElement = ensureElement<HTMLElement>('.header__basket-counter');
-  
     this.cartButton.addEventListener('click', () => {
       this.events.emit('cart:open');
     });
   }
-
-  // Возможно, это должен быть сеттер
-  counter(value: number) {
+  
+  set counter(value: number) {
     this.counterElement.textContent = String(value);
   }
 }

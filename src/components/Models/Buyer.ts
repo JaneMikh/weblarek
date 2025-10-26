@@ -1,7 +1,10 @@
 import { IBuyer, TErrors } from "../../types/index";
+import { IEvents } from "../base/Events";
 
 export class Buyer {
   private buyerData: Partial<IBuyer> = {};
+
+   constructor(private events: IEvents) {}
 
   //Получение всех данных покупателя
   getBuyerData(): Partial<IBuyer> {
@@ -11,6 +14,8 @@ export class Buyer {
   //Сохранение данных о покупателе
   setBuyerData(data: Partial<IBuyer>): void {
     this.buyerData = {...this.buyerData, ...data};
+    this.events.emit('buyer:update-data', {buyer: this.buyerData}) //изменение данных покупателя
+    this.validateData();
   }
 
   //Валидация введенных данных
@@ -33,5 +38,7 @@ export class Buyer {
       phone: '',
       address: '',
     };
+    this.events.emit('buyer:clear-data');
+    this.validateData();
   }
-};
+}
