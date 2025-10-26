@@ -37,7 +37,7 @@ export class Buyer {
       errors.phone = 'Неверно указан телефон';
 
     //Генерируется событие, для проверки валидации формы
-    this.events.emit("buyer:validated-data", {errors});
+    this.events.emit('buyer:validated-data', {errors});
     return errors;
   }
 
