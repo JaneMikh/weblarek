@@ -22,7 +22,7 @@ export class Form<T extends IFormData> {
     }, {} as Record<keyof T, HTMLInputElement>);
   }
 
-  // Сеттер ждя уравления состоянием кнопки отправки
+  // Сеттер для уравления состоянием кнопки отправки
   set valid(value: boolean) {
       this.isValid = value;
       if (this.submitButton) {

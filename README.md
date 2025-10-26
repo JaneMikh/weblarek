@@ -206,3 +206,255 @@ interface IOrderResponse {
 Методы класса:
 `getProductsData(): Promise<IProduct[]>` - получение массива товаров с сервера;
 `postOrderData(orderData: IOrderData): Promise<IOrderResponse>` - отправка данных заказа на сервер.
+
+## Слой представления (View)
+
+### Класс CartIcon
+Класс, включающий элемент кнопки корзины и счетчик количества товаров в корзине.
+
+```ts
+interface ICartIcon {
+  counter: number;
+}
+```
+Поля:
+`counterElement` - счетчик числа товаров;
+`cartButton` - кнопка корзины.
+
+Методы:
+`set counter(value: number)` - обновление количества товаров в корзине.
+
+### Класс Catalogue
+Класс, представляющий собой контейнер для карточек товаров, полученных с сервера.
+
+```ts
+interface ICatalogue {
+  gallery: HTMLElement[];
+}
+```
+Поля:
+`galleryElement: HTMLElement` - контейнер для товаров.
+
+Методы:
+`setContent(items: HTMLElement[])` - метод для добавления товаров в контейнер;
+`render(data?: Partial<ICatalogue> | undefined): HTMLElement` - метод для возвращения элемента в DOM.
+
+### Класс CartView
+Класс для отображения корзины и ее содержимого.
+
+Поля:
+`productsList: HTMLElement` - список товаров для покупки;
+`totalPrice: HTMLSpanElement` - общая сумма товаров в корзине;
+`addCartButton: HTMLButtonElement` - кнопка для оформления заказа.
+
+Методы:
+`setEmptyCartState()` - если коризна пуста, то вывести текст "Корзина пуста" и сделать кнопку оформления заказа недоступной.
+`updateState(items: HTMLElement[], price: number)` - добавление товаров в корзину.
+
+### Класс Modal
+Общий класс для модальных окон в проекте. Наследует класс Component.
+
+```ts
+interface ISuccessModal {
+  text: string;
+}
+```
+
+Поля:
+`content: HTMLElement` - содержимое модального окна;
+`closeButton` - кнопка для закрытия модального окна.
+
+Методы:
+`onEscHandler(event: KeyboardEvent)` - метод закрытия окна на кнопку "ESC";
+`open(card?: HTMLElement)` - метод, отвечающий за открытие модального окна;
+`close()` - - метод, отвечающий за закрытие модального окна;
+`render(): HTMLElement` - метод для возвращения элемента в DOM.
+
+### Класс SuccessModal
+Класс для модального окна, появляющегося после успешного оформления заказа.
+
+Поля:
+`description: HTMLElement` - поле, в котором отображается сумма выполненного заказа;
+`closeButton` - кнопка закрытия модального окна.
+Методы:
+`set text(value: string)` - сеттер для внесения данных о сумме заказа;
+`closeHandler(handler: () => void)` - метод для закрытия модального окна кликом на кнопку "За новыми покупками!"
+`render(): HTMLElement` - метод для возвращения элемента в DOM.
+
+### Класс Card
+Данный класс содержит общий функционал карточки товара.
+
+Интерфейс: `<T extends IProduct>`.
+
+Поля:
+`_CDN_URL = CDN_URL` - адрес сервера;
+`container: HTMLElement` - контейнер, в который будет отрисована каждая карточка товара;
+`events: IEvents` - подписка на события;
+`imageItem: HTMLImageElement | null` - изображение товара;
+`title: HTMLElement` - название товара;
+`category: HTMLSpanElement | null` - категория товара;
+`price: HTMLSpanElement | null` - стоимость товара;
+`cardIndex?: number` - индекс карточки товара;
+`cardId?: string` - id товара.
+
+Методы:
+`set image(src: string)` - сеттер для установки изображения по адресу (_CDN_URL);
+`setImage(img: HTMLImageElement, src: string, alt: string)` - метод для установки изображения;
+`setCategory(card: T): HTMLElement` - метод для добавления нужных категорий товарам;
+`setData(card: T, index?: number)` - метод для добавления данных из карточки товара в контейнер;
+`render(): HTMLElement` - метод для возвращения элемента в DOM.
+
+### Класс CardInCartView
+Данный класс используется для отображения карточки товара в корзине.
+
+Поля:
+`container: HTMLElement` - контейнер для добавленных в корзину товаров;
+`price: HTMLSpanElement` - стоимость товара;
+`title: HTMLElement` - название товара;
+`indexItem: HTMLSpanElement` - порядковый номер товара в корзине;
+`deleteButton: HTMLButtonElement` - кнопка для удаления товара из корзины.
+
+Методы:
+`setData(card: IProduct, index: number)` - - метод для добавления данных из карточки товара в контейнер;
+`render(): HTMLElement` - метод для возвращения элемента в DOM.
+
+### Класс CardInCatalogue
+Данный класс нужен для отображения карточки товара в каталоге. Наследует класс Card.
+
+Интерфейс: <IProduct>.
+Поля:
+`cardsData!: IProduct` - данные о товаре;
+
+Методы:
+`setData(product: IProduct, index?: number)` - добавление данных о товаре в карточку.
+
+### Класс CardInModal
+Данный класс нужен для отображения карточки товара в модальном окне. Наследует класс Card.
+
+Интерфейс: <IProduct>.
+Поля:
+`description: HTMLElement` - описание товара;
+`buyButton: HTMLButtonElement` - кнопка "Купить"/"Удалить из корзины"/"Недоступно";
+
+Методы:
+`updateButtonState(card: IProduct & {inCart?: boolean})` - метод, который отслеживает состояния кнопки: "купить", "удалить из корзины", "недоступно".
+`setData(card: IProduct & {inCart?: boolean}, index?: number)` - метод для передачи данных в контейнер и генерации событий.
+
+### Класс Form
+Данный класс содержит в себе общий функционал, который наследуется двумя другими формами для оформления заказа.
+
+Интерфейс:
+```ts
+interface IFormData {
+    [key: string]: string;   
+}
+```
+Поля:
+`container: HTMLFormElement` - контейнер с формой;
+`formErrors: HTMLElement` - элемент для ошибок из DOM;
+`isValid = false` - состояние валидности, по умолчанию "false";
+`inputs: Record<keyof T, HTMLInputElement>` - объект с ключами из имен полей ввода;
+`submitButton: HTMLButtonElement` - кнопка для подтверждения отправки формы.
+
+Методы:
+`set valid(value: boolean)` - сеттер для уравления состоянием кнопки отправки формы;
+`getInputValue(name: keyof T): string` - метод для получения текущего состояния поля по его имени;
+`setInputValue(name: keyof T, value: string): void` - метод для добавления значений в поля ввода;
+`clearError(): void` - метод ля удаления сообщения об ошибке;
+`setError(error: string): void` - метод для отображения ошибки при заполнении полей формы;
+`onSubmit(handler: (formData: T) => void): void` - метод, описывающаий логику отправки формы.
+
+### Класс ContactsForm
+Класс для формы "Номер телефона и mail". Наследует класс Form.
+
+Интерфейс:
+```ts
+interface IContactsForm extends IFormData {
+  email: string;
+  phone: string;
+}
+```
+Поля:
+`phoneInput: HTMLInputElement` - поле для ввода номера телефона;
+`emailInput: HTMLInputElement` - поле для ввода адреса электронной почты.
+
+Методы:
+`setErrors(errors: Record<string, string>)` - метод для отображения ошибок и обновления состояния формы;
+`onSubmit()` - метод для отправки формы с данными (email, phone);
+
+### Класс OrderForm
+Класс для формы "Способ оплаты и адрес доставки". Наследует класс Form.
+
+Интерфейс:
+```ts
+interface IOrderForm extends IFormData {
+  address: string;
+  payment: 'card' | 'cash' | '';
+}
+```
+Поля:
+`paymentType: 'card' | 'cash' | '' = ''` - способ оплаты (по умолчанию не выбран);
+`addressInput: HTMLInputElement` - поле для ввода адреса электронной почты;
+`cardButton: HTMLButtonElement` - кнопка для оплаты заказа онлайн;
+`cashButton: HTMLButtonElement` - кнопка для оплаты заказа при получении.
+
+Методы:
+`selectPayment(method: 'card' | 'cash'): void` - метод, управляющий выбором способа оплаты;
+`getInputValue(name: keyof IOrderForm): string` - метод для получения данных из полей ввода;
+`setInputValue(name: keyof IOrderForm, value: string): void` - метод для введения данных в поля ввода;
+`validate(): boolean` - метод для валидации полей ввода.
+
+## Presenter
+Presenter отвечает за логику взаимодействия между Model, View и API.
+
+### МОДЕЛИ
+#### class Products
+События: 
+`card:select` - выбрана карточка товара для ее открытия в модальном окне; 
+`catalogue:changed`- изменение состояния каталога в зависимости от наличия/отсутствия товаров, полученных с сервера.
+
+#### class Buyer
+Событие:
+`buyer:update-data` - изменение данных покупателя;
+`buyer:clear-data` - очистка данные пользователя;
+`buyer:validated-data` - проверка валидации формы.
+
+#### class Cart 
+Событие: 
+`cart:clear` - удаление всех товаров из корзины;
+`cart:changed` - изменение состояния корзины в зависимости от наличия/отсутствия товара и его количества.
+
+### ПРЕДСТАВЛЕНИЯ
+#### class CartIcon
+Событие: 
+`cart:open` - открытие модального окна с корзиной.
+
+#### class Modal
+Событие: 
+`modal:close` - очищает временные данные и сбрасывает состояние активных компонентов.
+
+#### class ContactsForm
+События: 
+`buyer:changed-field` - измение содержимого полей ввода;
+`contacts:submit` - подтверждение отправки формы, если она валидна;
+`contacts:open` - открытие формы для покупателя;
+`buyer:changed-field` - изменения в форме при заполнении полей.
+
+#### class OrderForm
+Событие:
+`order:open` - открытие формы для покупателя;
+`order:success` - если эта форма валидна, переходим к следующей.
+
+#### class CardInCartView
+Событие: 
+`cart:remove` - удаление карточки товара из корзины.
+
+#### class CardInCatalogue
+Событие:
+`card:select` - выбрана определенная карточка товара.
+
+#### class CardInModal
+События: 
+`card:toggle` - переключение состояние кнопки "Добавить"/"Удалить из корзины";
+`modal:close` - закрытие модального окна просмотра карточки товара;
+`cart:changed` - изменение состояния корзины в зависимости от наличия/отсутствия товараи его количества.

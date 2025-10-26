@@ -2,11 +2,11 @@ import { Component } from "../base/Component";
 import { ensureElement } from "../../utils/utils";
 import { IEvents } from "../base/Events";
 
-interface ICartButton {
+interface ICartIcon {
   counter: number;
 }
 
-export class CartIcon extends Component<ICartButton> {
+export class CartIcon extends Component<ICartIcon> {
   protected counterElement: HTMLElement;
   protected cartButton: HTMLButtonElement;
 

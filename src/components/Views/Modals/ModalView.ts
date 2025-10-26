@@ -36,6 +36,7 @@ export class Modal extends Component<{}> {
     document.addEventListener('keydown', this.onEscHandler);
     if (card) this.content.replaceChildren(card);
     this.toggleClass(this.container, 'modal_active', true);
+    document.body.style.overflow = 'hidden';
   }
 
   //Функция закрытия модального окна
@@ -43,6 +44,7 @@ export class Modal extends Component<{}> {
     document.removeEventListener('keydown', this.onEscHandler); 
     this.toggleClass(this.container, 'modal_active', false);
     this.events.emit('modal:close');
+    document.body.style.overflow = 'auto';
   }
 
   render(): HTMLElement {

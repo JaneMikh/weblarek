@@ -11,8 +11,8 @@ export class SuccessModal extends Component<ISuccessModal> {
   
   constructor(container: HTMLElement) {
     super(container);
-    this.description = ensureElement<HTMLElement>(".order-success__description", this.container);
-    this.closeButton = ensureElement<HTMLButtonElement>(".order-success__close", this.container);
+    this.description = ensureElement<HTMLElement>('.order-success__description', this.container);
+    this.closeButton = ensureElement<HTMLButtonElement>('.order-success__close', this.container);
   }
 
   set text(value: string) {
@@ -20,7 +20,7 @@ export class SuccessModal extends Component<ISuccessModal> {
   }
 
   closeHandler(handler: () => void) {
-    this.closeButton.addEventListener("click", handler);
+    this.closeButton.addEventListener('click', handler);
   }
 
   render(): HTMLElement {

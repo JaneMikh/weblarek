@@ -35,11 +35,11 @@ export class OrderForm extends Form<IOrderForm> {
   selectPayment(method: 'card' | 'cash'): void {
     this.paymentType = method;
     if (method === 'card') {
-      this.cardButton.classList.add("button_alt-active");
-      this.cashButton.classList.remove("button_alt-active");
+      this.cardButton.classList.add('button_alt-active');
+      this.cashButton.classList.remove('button_alt-active');
     } else {
-      this.cashButton.classList.add("button_alt-active");
-      this.cardButton.classList.remove("button_alt-active");
+      this.cashButton.classList.add('button_alt-active');
+      this.cardButton.classList.remove('button_alt-active');
     }
   }
 

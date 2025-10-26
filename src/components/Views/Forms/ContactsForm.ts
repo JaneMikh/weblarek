@@ -10,11 +10,9 @@ export interface IContactsForm extends IFormData {
 export class ContactsForm extends Form<IContactsForm> {
   protected phoneInput: HTMLInputElement;
   protected emailInput: HTMLInputElement;
-  //protected submitButton: HTMLButtonElement;
 
   constructor(container: HTMLFormElement, protected events: IEvents) {
     super(container);
-
     this.phoneInput = ensureElement<HTMLInputElement>('input[name="phone"]', this.container)!;
     this.emailInput = ensureElement<HTMLInputElement>('input[name="email"]', this.container)!;
     this.submitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', this.container)!;

@@ -28,19 +28,19 @@ const api = new Api(API_URL);
 const productApi = new ProductApi(api);
 
 // ТЕМПЛЕЙТЫ И КОНТЕНТЫ
-const cardTemplate = ensureElement<HTMLTemplateElement>("#card-catalog");
-const cartTemplate = ensureElement<HTMLTemplateElement>("#basket");
+const cardTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
+const cartTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const cartContent = cartTemplate.content.firstElementChild!.cloneNode(true) as HTMLElement;
-const orderTemplate = ensureElement<HTMLTemplateElement>("#order");
+const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const orderContent = orderTemplate.content.firstElementChild!.cloneNode(true) as HTMLFormElement;
-const contactsTemplate = ensureElement<HTMLTemplateElement>("#contacts");
+const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 const contactsContent = contactsTemplate.content.firstElementChild!.cloneNode(true) as HTMLFormElement;
-const successTemplate = ensureElement<HTMLTemplateElement>("#success");
+const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 const successContent = successTemplate.content.firstElementChild!.cloneNode(true) as HTMLElement;
-const cardPreviewTemplate = ensureElement<HTMLTemplateElement>("#card-preview");
+const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const cardContent = cardPreviewTemplate.content.firstElementChild!.cloneNode(true) as HTMLElement;
 
-// МОДЕЛИ (данные)
+// МОДЕЛИ (DATA)
 const catalogueModel = new Products(events);
 const cartModel = new Cart(events);
 const buyerModel = new Buyer(events);
@@ -83,7 +83,7 @@ events.on('card:toggle', ({ id }: { id: string }) => {
   if (cartModel.hasItem(id)) cartModel.removeItem(id);
   else {
     const product = catalogueModel.getItemsList().find((item) => item.id === id);
-    if (product) cartModel.addItem(product); // При этом запускается измерение состояния корзины "cart:change"
+    if (product) cartModel.addItem(product); // При этом запускается изменение состояния корзины "cart:change"
   }
 });
 
@@ -115,7 +115,7 @@ events.on('cart:open', () => {
 events.on('cart:changed', ({ items }: { items?: IProduct[] } = {}) => {
   const cartItems = items || cartModel.getProductsList();   // Получение массива товаров, перемещенных в корзину
   const cards = cartItems.map((item, index) => {           // Проходимся по массиву товаров и создаем новые копии карточек
-    const cardInCartTemplate = ensureElement<HTMLTemplateElement>("#card-basket");   // Новые темплейты
+    const cardInCartTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
     const newCardTemplate = cardInCartTemplate.content.firstElementChild!.cloneNode(true) as HTMLElement;
     const card = new CardInCartView(newCardTemplate, events);
 
