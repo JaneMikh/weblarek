@@ -1,10 +1,7 @@
 import { Component } from "../base/Component";
 import { ensureElement } from "../../utils/utils";
 import { IEvents } from "../base/Events";
-
-interface ICartIcon {
-  counter: number;
-}
+import { ICartIcon } from "../../types/index";
 
 export class CartIcon extends Component<ICartIcon> {
   protected counterElement: HTMLElement;

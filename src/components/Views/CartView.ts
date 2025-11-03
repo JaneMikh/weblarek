@@ -1,43 +1,57 @@
 import { ensureElement } from "../../utils/utils";
 import { IEvents } from "../base/Events";
+import { IProductData } from "../../types/index";
+import { Component } from "../base/Component";
 
-export class CartView  {
+export class CartView  extends Component<IProductData> {
   private productsList: HTMLElement;
   private totalPrice: HTMLSpanElement;
-  private addCartButton: HTMLButtonElement;
+  private cartButton: HTMLButtonElement;
 
   constructor(container: HTMLElement, protected events: IEvents) {
+    super(container);
     this.events = events;
-    this.productsList = ensureElement<HTMLElement>('.basket__list', container);
-    this.totalPrice = ensureElement<HTMLElement>('.basket__price', container);
-    this.addCartButton = ensureElement<HTMLButtonElement>('.basket__button', container);
+
+    this.productsList = ensureElement<HTMLElement>('.basket__list', this.container);
+    this.totalPrice = ensureElement<HTMLElement>('.basket__price', this.container);
+    this.cartButton = ensureElement<HTMLButtonElement>('.basket__button', this.container);
 
     this.setEmptyCartState();
+
+    this.cartButton.addEventListener('click', () => {
+      events.emit('order:open');
+    });
   }
 
-  private setEmptyCartState() {
+  set items(cards: HTMLElement[]) {
+    if(cards.length) {
+      this.cartButton.disabled = false;
+      this.productsList.replaceChildren(...cards);
+    } else { 
+      this.setEmptyCartState();
+   }
+  }
+
+  set total(value: number) {
+    this.totalPrice.textContent = `${value} синапсов`;
+  }
+
+  private createParagraph() {
     let paragraph = document.createElement('p');
     paragraph.className = 'basket__empty';
     paragraph.textContent = 'Корзина пуста';
     paragraph.style.opacity = '0.3';
     paragraph.style.fontSize = '30px';
 
-    this.productsList.append(paragraph);
-    this.addCartButton.disabled = true;
+    return paragraph;
   }
 
-  updateState(items: HTMLElement[], price: number) {
-    this.productsList.innerHTML = '';
-    this.totalPrice.textContent = `${price} синапсов`;
-    this.addCartButton.disabled = false;
+  setEmptyCartState() {
+    this.productsList.replaceChildren(this.createParagraph());
+    this.cartButton.disabled = true;
+  }
 
-     if (!items || items.length === 0) {
-      this.setEmptyCartState();
-      return;
-    }
-    
-    items.forEach((item) => {
-      this.productsList.append(item);
-    });
+  clearCart() {
+    this.items = [];
   }
 }

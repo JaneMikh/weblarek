@@ -1,9 +1,6 @@
 import { Component } from "../base/Component";
 import { IEvents } from "../base/Events";
-
-interface ICatalogue {
-  gallery: HTMLElement[];
-}
+import { ICatalogue } from "../../types/index";
 
 export class Catalogue extends Component<ICatalogue> {
   protected galleryElement: HTMLElement;

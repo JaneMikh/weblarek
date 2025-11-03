@@ -1,65 +1,60 @@
 import { ensureElement } from "../../../utils/utils";
-import { categoryMap, CDN_URL } from "../../../utils/constants";
-import { IProduct } from "../../../types/index";
-import { IEvents } from "../../base/Events";
+import { Component } from "../../base/Component";
+import { TCard } from "../../../types/index";
+import { categoryMap } from "../../../utils/constants";
 
-export class Card<T extends IProduct> {
-  protected _CDN_URL = CDN_URL;
-  protected container: HTMLElement;
-  protected events: IEvents;
-  protected imageItem: HTMLImageElement | null;
-  protected title: HTMLElement;
-  protected category: HTMLSpanElement | null;
-  protected price: HTMLSpanElement | null;
-  protected cardIndex?: number;
-  protected cardId?: string;
+export class Card<T> extends Component<TCard & T> {
+  protected titleElement: HTMLElement;
+  protected priceElement: HTMLSpanElement | null;
 
-  constructor(container: HTMLElement, events: IEvents){
-    this.container = container;
-    this.events = events;
+  constructor(container: HTMLElement){
+    super(container);
 
-    //Поиск элементов в DOM
-    this.category = ensureElement<HTMLSpanElement>('.card__category', container);
-    this.title = ensureElement<HTMLElement>('.card__title', container);
-    this.imageItem = ensureElement<HTMLImageElement>('.card__image', container);
-    this.price = ensureElement<HTMLSpanElement>('.card__price', container);
+    this.titleElement = ensureElement<HTMLElement>('.card__title', this.container);
+    this.priceElement = ensureElement<HTMLSpanElement>('.card__price', this.container);
   }
 
+  set title(value: string) {
+    this.titleElement.textContent = value;
+  }
+
+  set price(value: number) {
+    this.priceElement.textContent = value === null ? 'Бесценно' : `${value} синапсов`;
+  }
+}
+
+type CategoryKey = keyof typeof categoryMap;
+
+export abstract class CardCatalogModal<T={}> extends Card<TCard & T> {
+  protected imageElement: HTMLImageElement | null;
+  protected categoryElement: HTMLSpanElement | null;
+
+  constructor(container: HTMLElement) {
+    super(container);
+    this.imageElement = ensureElement<HTMLImageElement>('.card__image', this.container);
+    this.categoryElement = ensureElement<HTMLSpanElement>('.card__category', this.container);
+    this.titleElement = ensureElement<HTMLElement>('.card__title', this.container);
+  }
+  
+  get title() {
+    return this.titleElement.textContent;
+  }
+
+  set title(value: string) {
+    this.titleElement.textContent = value;
+  }
+ 
   set image(src: string) {
-    const srcProtocol = src.startsWith("http") ? src : `${this._CDN_URL}/${src.replace(/\.[^/.]+$/, ".png")}`;
-
-    this.setImage(
-      this.imageItem,
-      srcProtocol,
-      this.title.textContent || ''
-    );
+    this.setImage(this.imageElement, src, this.title);
   }
 
-  protected setImage(img: HTMLImageElement, src: string, alt: string) {
-    img.src = src;
-    img.alt = alt;
-  }
-
-  private setCategory(card: T): HTMLElement {
-    const categoryItem = categoryMap[card.category];
-    if (categoryItem) {
-      this.category.className = `card__category ${categoryItem}`;
+  set category(value: string) {
+    this.categoryElement.textContent = value;
+    for (const key in categoryMap) {
+      this.categoryElement.classList.toggle(
+        categoryMap[key as CategoryKey],
+        key === value
+      );
     }
-    this.category.textContent = card.category;
-    return this.category;
-  }
-    
-  setData(card: T, index?: number) {
-    this.title.textContent = card.title;
-    this.price.textContent = card.price === null ? 'Бесценно' : `${card.price} синапсов`;
-    this.cardId = card.id;
-    this.image = card.image;
-    this.cardIndex = index;
-
-    this.setCategory(card);
-  }
-
-  render(): HTMLElement {
-    return this.container;
   }
 }

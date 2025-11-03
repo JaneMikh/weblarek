@@ -26,7 +26,7 @@ export class Products {
   //Сохранение выбранной карточки товара для подробного отображения
   setSelectedItem(item: IProduct): void {
     this.selectedItem = item;
-    this.events.emit('card:select', {item});
+    this.events.emit('card:select', { item });
   }
 
   //Получение информации о товаре для его подробного отображения в отдельном окне

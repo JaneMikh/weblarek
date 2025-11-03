@@ -16,6 +16,7 @@ export interface IProduct {
   title: string;
   category: string;
   price: number | null;
+  inCart?: boolean;
 }
 
 //Покупатель
@@ -29,24 +30,49 @@ export interface IBuyer {
 //Слой коммуникации
 // Ответ сервера в случае GET-запроса
 export interface IProductData {
-    items: IProduct[]; //общий список товаров
-    total: number; //количество товаров в заказе
+  items: IProduct[]; //общий список товаров
+  total: number; //количество товаров в заказе
 }
 
 //Формат данных заказа при отправке на сервер (POST-запрос)
 export interface IOrderData extends IBuyer {
-    items: string[];  //массив из id каждого товара
-    total: number;  //общая сумма заказа
+  items: string[];  //массив из id каждого товара
+  total: number;  //общая сумма заказа
 }
 
 //Формат данных ответа сервера после успешного POST-запроса
 export interface IOrderResponse {
-    id: string; //id заказа, присваемый сервером
-    total: number; // общая сумма заказа
+   id: string; //id заказа, присваемый сервером
+  total: number; // общая сумма заказа
 }
 
-// Карточка товара (preview)
- export interface IGalleryCard {
-  product: IProduct;
-  image: string;
+// Интерфейс для обработки событий карточки товара
+export interface ICardActions {
+  onClick?: (event: MouseEvent) => void;
 }
+
+// Тип базовой карточки товара
+export type TCard = Pick<IProduct, 'title' | 'price'>;
+
+// Тип карточки товара в каталоге
+export type TCardCatalogue = Pick<IProduct, |'image' | 'category'>;
+
+// Тип карточки товара в отдельном окне просмотра
+export type TCardModal = TCardCatalogue & Pick<IProduct, 'description'>;
+// Тип карточки товара в корзине
+export type TCardInCart = TCard & Pick<IProduct, 'id'>;
+
+// Интерфейс для каталога
+export interface ICatalogue {
+  gallery: HTMLElement[];
+}
+
+// Интерфейс для модального окна
+export interface IModal {
+  content: HTMLElement;
+}
+
+export interface ICartIcon {
+  counter: number;
+}
+

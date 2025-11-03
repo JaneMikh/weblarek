@@ -1,9 +1,112 @@
-import { Card } from "./Card";
-import { IEvents } from "../../base/Events";
-import { IProduct } from "../../../types/index";
+import { ICardActions, TCardModal, TCard, IProduct } from "../../../types/index";
 import { ensureElement } from "../../../utils/utils";
+import { CardCatalogModal } from "./Card";
 
-export class CardInModal extends Card <IProduct> {
+export class CardInModal extends CardCatalogModal<TCardModal & TCard>{
+  protected descriptionElement: HTMLElement;
+  protected buyButtonElement: HTMLButtonElement;
+
+  constructor(container: HTMLElement, actions?: ICardActions) {
+    super(container);
+  
+    this.descriptionElement = ensureElement<HTMLElement>('.card__text', this.container);
+    this.buyButtonElement = ensureElement<HTMLButtonElement>('.card__button', this.container);
+
+    if(actions?.onClick) {
+      this.buyButtonElement.addEventListener('click', actions.onClick);
+    }
+  }
+
+  set description(value: string) {
+    this.descriptionElement.textContent = value;
+  }
+
+  checkPrice(item: IProduct) {
+    if (!item.price) {
+      this.buyButtonElement.disabled = true;
+      this.buyButtonElement.textContent = 'Недоступно';
+    } else {
+      this.buyButtonElement.disabled = false;
+    }
+  }
+
+  toggleButton(card: IProduct) {
+    if (!card.price) {
+      this.buyButtonElement.disabled = true;
+      this.buyButtonElement.textContent = 'Недоступно';
+    } else {
+      this.buyButtonElement.disabled = false;
+    }
+  }
+  // Функция для изменения состояния кнопки в зависимости от условий
+  updateButtonState(inCart: boolean) {
+      this.buyButtonElement.textContent = inCart 
+      ? 'Удалить из корзины' 
+      : 'Купить';
+  }
+}
+
+
+/*import { Card } from "./Card";
+import { ICardActions, TCardModal } from "../../../types/index";
+import { ensureElement } from "../../../utils/utils";
+import { IProduct } from "../../../types/index";
+
+export class CardInModal extends Card<TCardModal>{
+  protected descriptionElement: HTMLElement;
+  protected buyButtonElement: HTMLButtonElement;
+
+  // Знаю, что не рукомендуется использовать эти поля,
+  // но в моей реализации кода CardInModal вообще не знает о существовании CardInCatalogue,
+  // поэтому доступа к его полям у CardInModal нет.
+  protected imageElement: HTMLImageElement;
+  protected categoryElement: HTMLSpanElement;
+
+  constructor(container: HTMLElement, actions?: ICardActions) {
+    super(container);
+  
+    this.descriptionElement = ensureElement<HTMLElement>('.card__text', this.container);
+    this.buyButtonElement = ensureElement<HTMLButtonElement>('.card__button', this.container);
+    this.imageElement = ensureElement<HTMLImageElement>('.card__image', this.container);
+    this.categoryElement = ensureElement<HTMLSpanElement>('.card__category', this.container);
+
+    if(actions?.onClick) {
+      this.buyButtonElement.addEventListener('click', actions.onClick);
+    }
+  }
+
+  set description(value: string) {
+    this.descriptionElement.textContent = value;
+  }
+
+  set image(value: string) {
+    this.imageElement.src = value;
+  }
+
+  set category(value: string) {
+    this.categoryElement.textContent = value;
+  }
+
+  toggleButton(card: IProduct) {
+    if (!card.price) {
+      this.buyButtonElement.disabled = true;
+      this.buyButtonElement.textContent = 'Недоступно';
+    } else {
+      this.buyButtonElement.disabled = false;
+    }
+  }
+
+  // Функция для изменения состояния кнопки в зависимости от условий
+  updateButtonState(inCart: boolean) {
+    this.buyButtonElement.textContent = inCart 
+      ? 'Удалить из корзины' 
+      : 'Купить';
+  }
+
+}*/
+
+
+/*export class CardInModal extends Card <IProduct> {
   private description: HTMLElement;
   private buyButton: HTMLButtonElement;
 
@@ -39,7 +142,7 @@ export class CardInModal extends Card <IProduct> {
       if (!card.price) return;
 
       this.events.emit('card:toggle', {id: card.id});
-      this.events.emit('modal:close');
+      this.events.emit('modal:close'); Вот это тут не нужно
     };
 
     // Обновление состояния кнопки при изменении корзины
@@ -48,4 +151,4 @@ export class CardInModal extends Card <IProduct> {
       this.updateButtonState(card);
     });
   }
-}
+}*/
