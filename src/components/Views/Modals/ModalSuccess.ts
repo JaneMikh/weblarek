@@ -1,29 +1,23 @@
 import { ensureElement } from "../../../utils/utils";
 import { Component } from "../../base/Component";
-
-interface ISuccessModal {
-  text: string;
-}
+import { ISuccessModal, ISuccessModalActions } from "../../../types/index";
 
 export class SuccessModal extends Component<ISuccessModal> {
   private description: HTMLElement;
   private closeButton: HTMLButtonElement;
   
-  constructor(container: HTMLElement) {
+  constructor(container: HTMLElement, protected actions?: ISuccessModalActions) {
     super(container);
+
     this.description = ensureElement<HTMLElement>('.order-success__description', this.container);
     this.closeButton = ensureElement<HTMLButtonElement>('.order-success__close', this.container);
+
+    if(actions?.onClick) {
+      this.closeButton.addEventListener('click',actions.onClick);
+    }
   }
 
   set text(value: string) {
-    this.description.textContent = value;
-  }
-
-  closeHandler(handler: () => void) {
-    this.closeButton.addEventListener('click', handler);
-  }
-
-  render(): HTMLElement {
-    return this.container;
+    this.description.textContent = `Списано ${value} синапсов`;
   }
 }

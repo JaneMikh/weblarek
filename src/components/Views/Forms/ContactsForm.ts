@@ -1,60 +1,24 @@
 import { ensureElement } from "../../../utils/utils";
-import { Form, IFormData } from "./Form";
+import { Form } from "./Form";
 import { IEvents } from "../../base/Events";
-
-export interface IContactsForm extends IFormData {
-  email: string;
-  phone: string;
-}
+import { IContactsForm } from "../../../types/index";
 
 export class ContactsForm extends Form<IContactsForm> {
   protected phoneInput: HTMLInputElement;
   protected emailInput: HTMLInputElement;
 
   constructor(container: HTMLFormElement, protected events: IEvents) {
-    super(container);
-    this.phoneInput = ensureElement<HTMLInputElement>('input[name="phone"]', this.container)!;
-    this.emailInput = ensureElement<HTMLInputElement>('input[name="email"]', this.container)!;
-    this.submitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', this.container)!;
+    super(container, events);
 
-    this.submitButton.disabled = true;
-
-    const changeInputsEmit = () => {
-      this.events.emit('buyer:changed-field', {
-        formData: {
-          email: this.emailInput.value,
-          phone: this.phoneInput.value,
-        },
-      });
-    };
-
-    this.emailInput.addEventListener('input', changeInputsEmit);
-    this.phoneInput.addEventListener('input', changeInputsEmit);
+    this.phoneInput = ensureElement<HTMLInputElement>('input[name="phone"]', this.container);
+    this.emailInput = ensureElement<HTMLInputElement>('input[name="email"]', this.container);
   }
 
-  // Функция для отображения ошибок и обновления состояния формы
-  setErrors(errors: Record<string, string>) {
-        if (errors.email) {
-          this.setError(errors.email);
-        } else if (errors.phone) {
-          this.setError(errors.phone);
-        } else this.clearError();
-
-        const isErrors = Boolean(errors.email || errors.phone);
-        this.valid = !isErrors;
-        this.submitButton.disabled = isErrors;
-      }
-
-  onSubmit() {
-    this.container.addEventListener('submit', (event) => {
-      event.preventDefault();
-
-      const formData: IContactsForm = {
-        email: this.emailInput.value,
-        phone: this.phoneInput.value,
-      };
-
-      this.events.emit('contacts:submit', {formData});
-    });
+  set phone(value: string) {
+    this.phoneInput.value = value;
+  }
+  
+  set email(value: string) {
+    this.emailInput.value = value;
   }
 }

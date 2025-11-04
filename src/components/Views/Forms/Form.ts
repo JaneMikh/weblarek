@@ -1,71 +1,52 @@
-export interface IFormData {
-    [key: string]: string;   
-}
+import { IFormData, TErrors } from "../../../types/index";
+import { Component } from "../../base/Component";
+import { ensureElement } from "../../../utils/utils";
+import { IEvents } from "../../base/Events";
 
-export class Form<T extends IFormData> {
-  protected container: HTMLFormElement;
+export class Form<T> extends Component<IFormData> {
   protected formErrors: HTMLElement;
-  protected isValid = false;
-  protected inputs: Record<keyof T, HTMLInputElement>; // объект с ключами
   protected submitButton: HTMLButtonElement;
 
-  constructor(container: HTMLFormElement) {
-    this.container = container;
+  constructor(protected container: HTMLFormElement, protected events: IEvents) {
+    super(container);
+    this.formErrors = ensureElement<HTMLElement>('.form__errors', this.container);
+    this.submitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', this.container);
 
-    this.formErrors = container.querySelector<HTMLElement>('.form__errors')!;
-    this.submitButton = container.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    //Слушатель для отслеживания изменений в каждом инпуте
+    this.container.addEventListener('input', (event: Event) => {
+			const target = event.target as HTMLInputElement;
+			if (target && target.name)
+				this.changeInput(target.name as keyof TErrors, target.value);
+		});
 
-    this.inputs = Array.from(container.querySelectorAll<HTMLInputElement>('input'))
-      .reduce((acc, input) => {
-        acc[input.name as keyof T] = input;
-        return acc;
-    }, {} as Record<keyof T, HTMLInputElement>);
+    //Универсальный сабмит для двух разных форм
+    this.container.addEventListener('submit', (event: Event) => {
+			event.preventDefault();
+			this.events.emit(`${this.container.name}:submit`);
+		});
   }
 
-  // Сеттер для уравления состоянием кнопки отправки
   set valid(value: boolean) {
-      this.isValid = value;
-      if (this.submitButton) {
-        this.submitButton.disabled = !value;
-      }
-  }
-
-  // Функция для получения текущего состояния поля по его имени
-  getInputValue(name: keyof T): string {
-    return this.inputs[name]?.value ?? '';
-  }
-
-   // Функция для добавления значений в поля ввода
-  setInputValue(name: keyof T, value: string): void { // передаем имя поля и его значение
-    const input = this.inputs[name];
-    if (input) {
-      input.value = value;
+    if (value === true) {
+      this.submitButton.disabled = false;
+    } else {
+      this.submitButton.disabled = true;
     }
   }
 
-  // Функция для удаления сообщения об ошибке
-  clearError(): void {
-    this.formErrors.textContent = '';
+  set errors(value: string) {
+    this.formErrors.textContent = value; 
   }
 
-  // Функция для отображения ошибки при заполнении полей формы
-  setError(error: string): void {
-    this.formErrors.textContent = error; 
-  }
-
-  // Функция, описывающая логику отправки формы
-  onSubmit(handler: (formData: T) => void): void {
-    this.container.addEventListener('submit', (event) => {
-      //отменяем отправку формы по умолчанию
-      event.preventDefault();
-
-      // Собираем данные всех полей в объект
-      const formData = {} as T;   
-      for (const key in this.inputs) {
-        formData[key as keyof T] = this.inputs[key as keyof T].value as T[keyof T];
-      }
-
-      handler(formData);
-    });
-  }
+  // Функция для генерации события изменения инпута
+  protected changeInput(input: keyof TErrors, value: string): void {
+		this.events.emit(`order-${input}:change`, { value });
+	}
+  
+  render(data: Partial<T> & IFormData) {
+		const { valid, errors, ...inputs } = data;
+		super.render({ valid, errors });
+		Object.assign(this, inputs);
+		return this.container;
+	}
 }

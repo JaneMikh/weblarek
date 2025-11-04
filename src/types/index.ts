@@ -4,8 +4,8 @@ export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
 export type TPayment = 'card' | 'cash' | '';
 
 export interface IApi {
-    get<T extends object>(uri: string): Promise<T>;
-    post<T extends object>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
+  get<T extends object>(uri: string): Promise<T>;
+  post<T extends object>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
 }
 
 //Товар
@@ -21,7 +21,7 @@ export interface IProduct {
 
 //Покупатель
 export interface IBuyer {
-  payment: TPayment;
+  payment: string;
   email: string;
   phone: string;
   address: string;
@@ -42,12 +42,17 @@ export interface IOrderData extends IBuyer {
 
 //Формат данных ответа сервера после успешного POST-запроса
 export interface IOrderResponse {
-   id: string; //id заказа, присваемый сервером
+  id: string; //id заказа, присваемый сервером
   total: number; // общая сумма заказа
 }
 
 // Интерфейс для обработки событий карточки товара
 export interface ICardActions {
+  onClick?: (event: MouseEvent) => void;
+}
+
+// Интерфейс для обработки события успешного завершения заказа
+export interface ISuccessModalActions {
   onClick?: (event: MouseEvent) => void;
 }
 
@@ -76,3 +81,24 @@ export interface ICartIcon {
   counter: number;
 }
 
+//Валидация ошибок полей ввода
+export type TErrors = Partial<Record<keyof IBuyer, string>>;
+
+export interface IFormData {
+  errors: string[];
+  valid: boolean;
+}
+
+export interface IContactsForm extends IFormData {
+  email: string;
+  phone: string;
+}
+
+export interface IOrderForm extends IFormData {
+  address: string;
+  payment: TPayment;
+}
+
+export interface ISuccessModal {
+  text: number;
+}

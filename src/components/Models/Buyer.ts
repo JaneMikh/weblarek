@@ -1,43 +1,53 @@
-import { IBuyer } from "../../types/index";
+import { TErrors, IOrderData } from "../../types/index";
 import { IEvents } from "../base/Events";
 
 export class Buyer {
-  private buyerData: Partial<IBuyer> = {};
+  private buyerData: IOrderData = {
+    payment: '',
+    email: '',
+    phone: '',
+    address: '',
+    items: [],
+    total: 0
+  };
 
-   constructor(private events: IEvents) {}
+  constructor(private events: IEvents) {}
 
   //Получение всех данных покупателя
-  getBuyerData(): Partial<IBuyer> {
+  getBuyerData(): IOrderData {
     return this.buyerData;
   }
 
   //Сохранение данных о покупателе
-  setBuyerData(data: Partial<IBuyer>): void {
+  setBuyerData(data: Partial<IOrderData>): void {
     this.buyerData = {...this.buyerData, ...data};
-    //изменение данных покупателя
-    this.events.emit('buyer:update-data', {buyer: this.buyerData});
     this.validateData();
   }
 
-  validateData(): Record<string, string> {
-    //Объект для хранения ошибок
-    const errors: Record<string, string> = {};
-    
-    //Обрабока ошибок для формы "Способ оплаты и адрес доставки"
-    if ('payment' in this.buyerData && !this.buyerData.payment) errors.payment = 'Не выбран способ оплаты';
-    if ('address' in this.buyerData && !this.buyerData.address) errors.address = 'Укажите адрес доставки';
+  validateData(): TErrors {
+    const errors: TErrors = {};
 
-    //Обрабока ошибок для формы "Адресс электронной почты и номер телефона"
-    if ('email' in this.buyerData && !this.buyerData.email) errors.email = 'Укажите email';
-    else if ('email' in this.buyerData && this.buyerData.email && !this.buyerData.email.includes("@"))
-      errors.email = 'Неверно указан email';
-
-    if ('phone' in this.buyerData && !this.buyerData.phone) errors.phone = 'Укажите телефон';
-    else if ('phone' in this.buyerData && this.buyerData.phone && !this.buyerData.phone.match(/^\+?\d{10,15}$/))
-      errors.phone = 'Неверно указан телефон';
-
-    //Генерируется событие, для проверки валидации формы
-    this.events.emit('buyer:validated-data', {errors});
+    if(!this.buyerData.payment) {
+      errors.payment = "Укажите способ оплаты покупки"
+    } else {
+      delete errors.payment;
+    };
+    if(!this.buyerData.email) {
+      errors.email = "Укажите адрес электронной почты"
+    } else {
+      delete errors.email;
+    };
+    if(!this.buyerData.phone) {
+      errors.phone = "Укажите Ваш номер телефона"
+    } else {
+      delete errors.phone;
+    };
+    if(!this.buyerData.address) {
+      errors.address = "Укажите адрес доставки"
+    } else {
+      delete errors.address;
+    };
+    this.events.emit('form-errors:change',  errors)
     return errors;
   }
 
@@ -48,8 +58,8 @@ export class Buyer {
       email: '',
       phone: '',
       address: '',
+      items: [],
+      total: 0
     };
-    this.events.emit('buyer:clear-data');
-    this.validateData();
   }
 }

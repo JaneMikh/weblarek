@@ -1,78 +1,35 @@
 import { ensureElement } from "../../../utils/utils";
-import { Form, IFormData } from "./Form";
-
-export interface IOrderForm extends IFormData {
-  address: string;
-  payment: 'card' | 'cash' | '';
-}
+import { Form } from "./Form";
+import { IOrderForm } from "../../../types/index";
+import { IEvents } from "../../base/Events";
+import { ensureAllElements } from "../../../utils/utils";
 
 export class OrderForm extends Form<IOrderForm> {
-  protected paymentType: 'card' | 'cash' | '' = '';
   protected addressInput: HTMLInputElement;
-  protected cardButton: HTMLButtonElement;
-  protected cashButton: HTMLButtonElement;
+  protected paymentType: HTMLButtonElement[];
 
-  constructor(container: HTMLFormElement) {
-    super(container);
+  constructor(container: HTMLFormElement, events: IEvents) {
+    super(container, events);
 
-    this.addressInput = ensureElement<HTMLInputElement>('input[name="address"]', this.container)!;
-    this.cashButton = ensureElement<HTMLButtonElement>('.button[name="cash"]', this.container)!;
-    this.cardButton = ensureElement<HTMLButtonElement>('.button[name="card"]', this.container)!;
+    this.addressInput = ensureElement<HTMLInputElement>('input[name="address"]', this.container);
+    this.paymentType = ensureAllElements<HTMLButtonElement>('.button_alt', this.container);
     
-    this.addressInput.addEventListener('input', () => this.validate());
-
-    this.cashButton.addEventListener("click", () => {
-      this.selectPayment('cash');
-      this.validate();
-    });
-
-    this.cardButton.addEventListener("click", () => {
-      this.selectPayment('card');
-      this.validate();
+    //Слушатели для кнопок выбора способа оплаты
+    this.paymentType.forEach((button) => {
+      button.addEventListener('click', () => {
+        this.payment = button.name;
+        this.changeInput(`payment`, button.name);
+      });
     });
   }
 
-  selectPayment(method: 'card' | 'cash'): void {
-    this.paymentType = method;
-    if (method === 'card') {
-      this.cardButton.classList.add('button_alt-active');
-      this.cashButton.classList.remove('button_alt-active');
-    } else {
-      this.cashButton.classList.add('button_alt-active');
-      this.cardButton.classList.remove('button_alt-active');
-    }
+  set payment(value: string) {
+    this.paymentType.forEach((button) => {
+      this.toggleClass(button, 'button_alt-active', button.name === value);
+    })
   }
 
-  // Функция для получения данных из полей ввода
-  getInputValue(name: keyof IOrderForm): string {
-    if (name === 'payment') return this.paymentType;
-    return super.getInputValue(name);
+  set address(value: string) {
+    this.addressInput.value = value;
   }
-
-  //Функция для введения данных в поля ввода
-  setInputValue(name: keyof IOrderForm, value: string): void {
-    if (name === 'payment') {
-      this.paymentType = value as 'card' | 'cash';
-    } else {
-      super.setInputValue(name, value);
-    }
-  }
-
-  // Функция для валидации полей ввода
-  validate(): boolean {
-    const paymentIsValid = this.paymentType !== '';
-    const addressIsValid = this.getInputValue('address').trim().length > 0;
-    
-    const errorsList: string[] = [];
-    if (!paymentIsValid) errorsList.push('Не выбран способ оплаты');
-    if (!addressIsValid) errorsList.push('Укажите адрес доставки');
-    if (errorsList.length > 0) {
-      this.setError(errorsList.join(". "));
-    } else {
-      this.clearError();
-    }
-
-    this.valid = paymentIsValid && addressIsValid ;
-    return this.isValid;
-  } 
 }

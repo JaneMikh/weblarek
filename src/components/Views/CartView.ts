@@ -46,7 +46,7 @@ export class CartView  extends Component<IProductData> {
     return paragraph;
   }
 
-  setEmptyCartState() {
+  private setEmptyCartState() {
     this.productsList.replaceChildren(this.createParagraph());
     this.cartButton.disabled = true;
   }

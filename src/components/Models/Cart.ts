@@ -33,7 +33,7 @@ export class Cart {
   //Удаление всех товаров из корзины
   clearCart(): void {
    this.productsList = [];
-   this.events.emit('cart:clear');
+   this.events.emit('cart:changed');
   }
 
   //Подсчет количества товаров в корзине
