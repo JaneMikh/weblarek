@@ -102,7 +102,6 @@ events.on('card:select', (item: IProduct) => {
     item.inCart = true;
     cardPreview.updateButtonState(true)
   }
-
   cardPreview.toggleButton(item);
   modalView.render({
     content: cardPreview.render({
@@ -164,7 +163,7 @@ events.on('cart:changed', ({ items }: { items?: IProduct[] } = {}) => {
 events.on('order:open', () => {
   const products = cartModel.getProductsList();
   const productsIdList = products.map(item => item.id);
-  buyerModel.setBuyerData({items: productsIdList, total: cartModel.getTotalPrice()});
+  buyerModel.setBuyerData({ items: productsIdList, total: cartModel.getTotalPrice() });
   
   modalView.render({
     content: orderFormView.render({
@@ -176,7 +175,7 @@ events.on('order:open', () => {
   });
 });
 
-// Обработка событий в полях форм для даполнения данных покупателя
+// Обработка событий в полях форм для заполнения данных покупателя
 events.on('order-payment:change', (info: {value: string }) => {
   buyerModel.setBuyerData({ payment: info.value });
 });
@@ -218,7 +217,6 @@ events.on('form-errors:change', (errors: Partial<TErrors>) => {
     contactsFormErrors.push(phone);
   }
   contactsFormView.errors = contactsFormErrors.join('; ');
-  console.log(contactsFormErrors);
 });
 
 events.on('order:submit', () => {

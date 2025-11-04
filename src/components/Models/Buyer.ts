@@ -16,15 +16,15 @@ export class Buyer {
   //Получение всех данных покупателя
   getBuyerData(): IOrderData {
     return this.buyerData;
-  }
+  };
 
   //Сохранение данных о покупателе
   setBuyerData(data: Partial<IOrderData>): void {
     this.buyerData = {...this.buyerData, ...data};
     this.validateData();
-  }
+  };
 
-  validateData(): TErrors {
+  private validateData(): TErrors {
     const errors: TErrors = {};
 
     if(!this.buyerData.payment) {
@@ -47,7 +47,7 @@ export class Buyer {
     } else {
       delete errors.address;
     };
-    this.events.emit('form-errors:change',  errors)
+    this.events.emit('form-errors:change',  errors);
     return errors;
   }
 
@@ -60,6 +60,6 @@ export class Buyer {
       address: '',
       items: [],
       total: 0
-    };
+    }
   }
 }

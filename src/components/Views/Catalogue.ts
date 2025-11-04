@@ -11,13 +11,13 @@ export class Catalogue extends Component<ICatalogue> {
     this.events = events;
   }
 
-  setContent(items: HTMLElement[]) {
+  setContent(items: HTMLElement[]): void {
     this.galleryElement.replaceChildren(...items);
   }
 
   render(data?: Partial<ICatalogue> | undefined): HTMLElement {
-     if (data?.gallery) {
-        this.setContent(data.gallery);
+    if (data?.gallery) {
+      this.setContent(data.gallery);
     }
     return this.galleryElement;
   }

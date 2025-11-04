@@ -36,7 +36,7 @@ export class CartView  extends Component<IProductData> {
     this.totalPrice.textContent = `${value} синапсов`;
   }
 
-  private createParagraph() {
+  private createParagraph(): HTMLParagraphElement {
     let paragraph = document.createElement('p');
     paragraph.className = 'basket__empty';
     paragraph.textContent = 'Корзина пуста';
@@ -46,12 +46,12 @@ export class CartView  extends Component<IProductData> {
     return paragraph;
   }
 
-  private setEmptyCartState() {
+  private setEmptyCartState(): void {
     this.productsList.replaceChildren(this.createParagraph());
     this.cartButton.disabled = true;
   }
 
-  clearCart() {
+  clearCart(): void {
     this.items = [];
   }
 }

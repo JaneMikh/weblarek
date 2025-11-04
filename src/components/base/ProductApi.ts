@@ -19,9 +19,8 @@ export class ProductApi {
   async getProductsData(): Promise<IProduct[]> {
     try{
       const response = await this.api.get<IProductData>('/product/');
-      //return response.items;
-      return response.items.map((item) => ({  //Получение изображений пришлось сделать так
-        ...item,                              //Иначе у меня не получилось
+      return response.items.map((item) => ({
+        ...item,
         image: this.cdn + item.image
       }));
     } catch(error) {

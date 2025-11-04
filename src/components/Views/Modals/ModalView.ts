@@ -31,23 +31,23 @@ export class Modal extends Component<IModal> {
     this.contentElement.replaceChildren(value);
   }
 
-  //Закрытие окна на кнопку "ESC" (опционально)
-  protected onEscHandler(event: KeyboardEvent) {
+  // Закрытие окна на кнопку "ESC" (опционально)
+  protected onEscHandler(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
       this.close();
     }
   }
 
-  //Функция открытия модального окна
-  protected open() {
+  // Открыть модальное окно
+  protected open(): void {
     document.addEventListener('keydown', this.onEscHandler);
     this.toggleClass(this.container, 'modal_active', true);
     this.toggleClass(this.pageWrapper, 'page__wrapper_locked', true);
     this.events.emit('modal:open');
   }
 
-  //Функция закрытия модального окна
-  close() {
+  // Закрыть модальное окно
+  close(): void {
     document.removeEventListener('keydown', this.onEscHandler); 
     this.toggleClass(this.container, 'modal_active', false);
     this.toggleClass(this.pageWrapper, 'page__wrapper_locked');

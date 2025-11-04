@@ -8,7 +8,6 @@ export class CardInModal extends CardCatalogModal<TCardModal & TCard>{
 
   constructor(container: HTMLElement, actions?: ICardActions) {
     super(container);
-  
     this.descriptionElement = ensureElement<HTMLElement>('.card__text', this.container);
     this.buyButtonElement = ensureElement<HTMLButtonElement>('.card__button', this.container);
 
@@ -21,15 +20,6 @@ export class CardInModal extends CardCatalogModal<TCardModal & TCard>{
     this.descriptionElement.textContent = value;
   }
 
-  checkPrice(item: IProduct) {
-    if (!item.price) {
-      this.buyButtonElement.disabled = true;
-      this.buyButtonElement.textContent = 'Недоступно';
-    } else {
-      this.buyButtonElement.disabled = false;
-    }
-  }
-
   toggleButton(card: IProduct) {
     if (!card.price) {
       this.buyButtonElement.disabled = true;
@@ -38,7 +28,7 @@ export class CardInModal extends CardCatalogModal<TCardModal & TCard>{
       this.buyButtonElement.disabled = false;
     }
   }
-  // Функция для изменения состояния кнопки в зависимости от условий
+
   updateButtonState(inCart: boolean) {
       this.buyButtonElement.textContent = inCart 
       ? 'Удалить из корзины' 

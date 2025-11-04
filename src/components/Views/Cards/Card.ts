@@ -9,7 +9,6 @@ export class Card<T> extends Component<TCard & T> {
 
   constructor(container: HTMLElement){
     super(container);
-
     this.titleElement = ensureElement<HTMLElement>('.card__title', this.container);
     this.priceElement = ensureElement<HTMLSpanElement>('.card__price', this.container);
   }

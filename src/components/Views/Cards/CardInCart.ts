@@ -21,7 +21,7 @@ export class CardInCartView extends Card<TCardInCart> {
     this.container.dataset.id = value;
   }
 
-  setCardIndex(index: number) {
+  setCardIndex(index: number): void {
     this.indexItem.textContent = (index + 1).toString();
   }
 }

@@ -27,7 +27,6 @@ export interface IBuyer {
   address: string;
 }
 
-//Слой коммуникации
 // Ответ сервера в случае GET-запроса
 export interface IProductData {
   items: IProduct[]; //общий список товаров
@@ -77,28 +76,33 @@ export interface IModal {
   content: HTMLElement;
 }
 
+// Интерфейс для иконки корзины
 export interface ICartIcon {
   counter: number;
 }
 
-//Валидация ошибок полей ввода
+// Валидация ошибок полей ввода
 export type TErrors = Partial<Record<keyof IBuyer, string>>;
 
+// Интерфейс для формы (соновной)
 export interface IFormData {
   errors: string[];
   valid: boolean;
 }
 
+// Интерфейс для формы с email и телефоном
 export interface IContactsForm extends IFormData {
   email: string;
   phone: string;
 }
 
+// Интерфейс для формы с адресом доставки и способом оплаты
 export interface IOrderForm extends IFormData {
   address: string;
   payment: TPayment;
 }
 
+// Интерфейс для модального окна в случае успешного оформления заказа
 export interface ISuccessModal {
   text: number;
 }

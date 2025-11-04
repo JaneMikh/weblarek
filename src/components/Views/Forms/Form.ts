@@ -38,12 +38,12 @@ export class Form<T> extends Component<IFormData> {
     this.formErrors.textContent = value; 
   }
 
-  // Функция для генерации события изменения инпута
+  // Функция для генерации событий изменения инпутов
   protected changeInput(input: keyof TErrors, value: string): void {
 		this.events.emit(`order-${input}:change`, { value });
 	}
   
-  render(data: Partial<T> & IFormData) {
+  render(data: Partial<T> & IFormData): HTMLFormElement {
 		const { valid, errors, ...inputs } = data;
 		super.render({ valid, errors });
 		Object.assign(this, inputs);

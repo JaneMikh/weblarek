@@ -15,7 +15,7 @@ export class Cart {
   addItem(item: IProduct): void {
     if(!this.hasItem(item.id)) {
       this.productsList.push(item);
-      this.events.emit('cart:changed', {items: this.productsList});
+      this.events.emit('cart:changed', { items: this.productsList });
     }
   }
 
@@ -27,7 +27,7 @@ export class Cart {
   //Удаление товара из корзины
   removeItem(id: string): void {
     this.productsList = this.productsList.filter(item => item.id !== id);
-    this.events.emit('cart:changed', { items: this.productsList});
+    this.events.emit('cart:changed', { items: this.productsList });
   }
 
   //Удаление всех товаров из корзины

@@ -33,4 +33,4 @@ export class Products {
   getSelectedItem(): IProduct | null {
     return this.selectedItem;
   }
-};
+}

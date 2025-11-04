@@ -10,7 +10,6 @@ export class OrderForm extends Form<IOrderForm> {
 
   constructor(container: HTMLFormElement, events: IEvents) {
     super(container, events);
-
     this.addressInput = ensureElement<HTMLInputElement>('input[name="address"]', this.container);
     this.paymentType = ensureAllElements<HTMLButtonElement>('.button_alt', this.container);
     
@@ -18,7 +17,7 @@ export class OrderForm extends Form<IOrderForm> {
     this.paymentType.forEach((button) => {
       button.addEventListener('click', () => {
         this.payment = button.name;
-        this.changeInput(`payment`, button.name);
+        this.changeInput('payment', button.name);
       });
     });
   }
