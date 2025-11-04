@@ -20,7 +20,7 @@ export class CardInModal extends CardCatalogModal<TCardModal & TCard>{
     this.descriptionElement.textContent = value;
   }
 
-  toggleButton(card: IProduct) {
+  toggleButton(card: IProduct): void {
     if (!card.price) {
       this.buyButtonElement.disabled = true;
       this.buyButtonElement.textContent = 'Недоступно';
@@ -29,7 +29,7 @@ export class CardInModal extends CardCatalogModal<TCardModal & TCard>{
     }
   }
 
-  updateButtonState(inCart: boolean) {
+  updateButtonState(inCart: boolean): void {
       this.buyButtonElement.textContent = inCart 
       ? 'Удалить из корзины' 
       : 'Купить';

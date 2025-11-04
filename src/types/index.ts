@@ -63,6 +63,7 @@ export type TCardCatalogue = Pick<IProduct, |'image' | 'category'>;
 
 // Тип карточки товара в отдельном окне просмотра
 export type TCardModal = TCardCatalogue & Pick<IProduct, 'description'>;
+
 // Тип карточки товара в корзине
 export type TCardInCart = TCard & Pick<IProduct, 'id'>;
 
