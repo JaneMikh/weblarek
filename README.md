@@ -163,13 +163,11 @@ interface IBuyer {
 - адресс доставки (address);
 - адрес электронной почты покупателя (email);
 - номер телефона покупателя (phone);
-- массив из id товаров, выбранных для заказа (items);
-- сумма заказа (total).
 
 Методы:
-- `getBuyerData(): IOrderData` - получение всех данных покупателя;
-- `setBuyerData(data: Partial<IOrderData>): void` - общий метод для сохранения данных заказа;
-- `private validateData(): TErrors` - валидация введенных данных, где 
+- `getBuyerData(): Partial<IBuyer>` - получение всех данных покупателя;
+- `setBuyerData(data: Partial<IBuyer>): void` - общий метод для сохранения данных заказа;
+- `validateData(): TErrors` - валидация введенных данных, где 
 ```ts 
 type TErrors = Partial<Record<keyof IBuyer, string>>;
 ```
@@ -438,6 +436,7 @@ Presenter отвечает за логику взаимодействия меж
 #### class Buyer
 Событие:
 - `form-errors:change` - для проверки наличия ошибок при заполнение полей формы;
+- `buyer:update-data` - обновление данных покупателя.
 
 #### class Cart 
 Событие: 

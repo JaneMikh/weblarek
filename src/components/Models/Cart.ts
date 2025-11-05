@@ -25,8 +25,8 @@ export class Cart {
   }
 
   //Удаление товара из корзины
-  removeItem(id: string): void {
-    this.productsList = this.productsList.filter(item => item.id !== id);
+  removeItem(product: IProduct): void {
+    this.productsList = this.productsList.filter(item => item.id !== product.id);
     this.events.emit('cart:changed', { items: this.productsList });
   }
 

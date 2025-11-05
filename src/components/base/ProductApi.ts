@@ -8,21 +8,16 @@ import {
 
 export class ProductApi {
   private api: IApi;
-  private cdn: string;
 
-  constructor(api: IApi, cdn: string) {
+  constructor(api: IApi) {
     this.api = api;
-    this.cdn = cdn;
   }
 
   //Получение списка товаров с сервера
   async getProductsData(): Promise<IProduct[]> {
     try{
       const response = await this.api.get<IProductData>('/product/');
-      return response.items.map((item) => ({
-        ...item,
-        image: this.cdn + item.image
-      }));
+      return response.items;
     } catch(error) {
       console.error('Ошибка при загрузке товаров: ', error);
       throw error;

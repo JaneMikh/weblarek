@@ -16,7 +16,6 @@ export interface IProduct {
   title: string;
   category: string;
   price: number | null;
-  inCart?: boolean;
 }
 
 //Покупатель

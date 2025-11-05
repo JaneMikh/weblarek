@@ -7,7 +7,7 @@ import { Api } from './components/base/Api';
 import { API_URL, CDN_URL } from './utils/constants';
 import { CartIcon } from './components/Views/CartIcon';
 import { EventEmitter } from './components/base/Events';
-import { IProduct } from './types/index';
+import { IBuyer, IProduct, TErrors, IOrderData } from './types/index';
 import { Modal } from './components/Views/Modals/ModalView';
 import { CartView } from './components/Views/CartView';
 import { Catalogue } from './components/Views/Catalogue';
@@ -16,17 +16,16 @@ import { CardInCatalogue } from './components/Views/Cards/CardInCatalogue';
 import { CardInModal } from './components/Views/Cards/CardInModal';
 import { CardInCartView } from './components/Views/Cards/CardInCart';
 import { ContactsForm} from './components/Views/Forms/ContactsForm';
-import { OrderForm} from './components/Views/Forms/OrderForm';
+import { OrderForm } from './components/Views/Forms/OrderForm';
 import { SuccessModal } from './components/Views/Modals/ModalSuccess';
 import { cloneTemplate } from './utils/utils';
-import { TErrors } from './types/index';
 
 // СОБЫТИЯ
 const events = new EventEmitter();
 
 // API
 const api = new Api(API_URL);
-const productApi = new ProductApi(api, CDN_URL);
+const productApi = new ProductApi(api);
 
 // ТЕМПЛЕЙТЫ
 const cardTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
@@ -55,6 +54,7 @@ function changeImageFormat(apiProducts: IProduct[]): IProduct[] {
   const newItems: IProduct[] = [];
   for (const item of apiProducts) {
     const newItem = { ...item };
+    newItem.image = CDN_URL + newItem.image; 
     if (newItem.image && newItem.image.toLowerCase().endsWith(".svg")) {
       newItem.image = newItem.image.slice(0, -4) + ".png";
     }
@@ -68,7 +68,6 @@ async function loadProducts() {
   try {
     const cardList = await productApi.getProductsData();
     catalogueModel.setItemsList(changeImageFormat(cardList));
-    
   } catch (error) {
     console.error('Ошибка при загрузке каталога: ', error);
   }
@@ -90,47 +89,39 @@ events.on('catalogue:changed', () => {
 events.on('card:select', (item: IProduct) => {
   const cardPreview = new CardInModal(cloneTemplate(cardPreviewTemplate), {
     onClick: () => {
-      if(!item.inCart) {
+      const state = cartModel.hasItem(item.id);
+      if(!state) {
         events.emit('card:add-to-cart', item);
+        cardPreview.updateButtonState(true);
       } else {
         events.emit('card:delete-from-cart', item);
+        cardPreview.updateButtonState(false);
       }
-      cardPreview.updateButtonState(item.inCart);
     }
   });
   if (cartModel.hasItem(item.id)){
-    item.inCart = true;
-    cardPreview.updateButtonState(true)
+    cardPreview.updateButtonState(true);
   }
   cardPreview.toggleButton(item);
   modalView.render({
-    content: cardPreview.render({
-                title: item.title,
-                price: item.price,
-                image: item.image,
-                category: item.category,
-                description: item.description
-    })
- });
+    content: cardPreview.render(item)
+  });
 });
 
 // Добавление товара в корзину
 events.on('card:add-to-cart', (item: IProduct) => {
   if (cartModel.hasItem(item.id)) {
-    cartModel.removeItem(item.id);
+    cartModel.removeItem(item);
   } else {
     const product = catalogueModel.getItemsList().find((element) => element.id === item.id);
     if (product) cartModel.addItem(product); 
   }
-	item.inCart = true;
   cartModel.addItem(item);
 });
 
 // Удаление товара из корзины
 events.on('card:delete-from-cart', (item: IProduct) => {
-	item.inCart = false;
-	cartModel.removeItem(item.id);
-  events.emit('cart:changed', { items: cartModel.getProductsList() });
+	cartModel.removeItem(item);
 });
 
 // Открыть корзину
@@ -161,10 +152,6 @@ events.on('cart:changed', ({ items }: { items?: IProduct[] } = {}) => {
 
 // Переход к форме "Способ оплаты и адрес доставки"
 events.on('order:open', () => {
-  const products = cartModel.getProductsList();
-  const productsIdList = products.map(item => item.id);
-  buyerModel.setBuyerData({ items: productsIdList, total: cartModel.getTotalPrice() });
-  
   modalView.render({
     content: orderFormView.render({
       payment: '',
@@ -178,18 +165,22 @@ events.on('order:open', () => {
 // Обработка событий в полях форм для заполнения данных покупателя
 events.on('order-payment:change', (info: {value: string }) => {
   buyerModel.setBuyerData({ payment: info.value });
+  buyerModel.validateData();
 });
 
 events.on('order-address:change', (info: {value: string }) => {
   buyerModel.setBuyerData({ address: info.value });
+  buyerModel.validateData();
 });
 
 events.on('order-email:change', (info: { value: string }) => {
 	buyerModel.setBuyerData({ email: info.value });
+  buyerModel.validateData();
 });
 
 events.on('order-phone:change', (info: { value: string }) => {
 	buyerModel.setBuyerData({ phone: info.value });
+  buyerModel.validateData();
 });
 
 // Валидация полей ввода
@@ -205,7 +196,7 @@ events.on('form-errors:change', (errors: Partial<TErrors>) => {
   if (address) {
     orderFormErrors.push(address);
   }
-  orderFormView.errors = orderFormErrors.join('; ');
+  orderFormView.errors = orderFormErrors.join(', ');
 
  // Формирование строки ошибок для contactsFormView
   contactsFormView.valid = !email && !phone;
@@ -216,8 +207,9 @@ events.on('form-errors:change', (errors: Partial<TErrors>) => {
   if (phone) {
     contactsFormErrors.push(phone);
   }
-  contactsFormView.errors = contactsFormErrors.join('; ');
+  contactsFormView.errors = contactsFormErrors.join(', ');
 });
+
 
 events.on('order:submit', () => {
   modalView.render({
@@ -230,8 +222,16 @@ events.on('order:submit', () => {
   });
 });
 
+// Отправка формы заказа на сервер
 events.on('contacts:submit', () => {
-  const order = buyerModel.getBuyerData();
+  const buyerData = buyerModel.getBuyerData();
+  const buyerNewData = Object.assign({}, buyerData) as IBuyer;
+  const products = cartModel.getProductsList();
+  const productsIdData = products.map(item => item.id);
+  const totalPriceData = cartModel.getTotalPrice();
+
+  const order: IOrderData = {...buyerNewData, items: productsIdData, total: totalPriceData };
+  
   productApi.postOrderData(order)
   .then((res) => {
     cartModel.clearCart();
